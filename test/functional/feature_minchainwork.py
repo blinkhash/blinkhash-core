@@ -28,7 +28,7 @@ class MinimumChainWorkTest(BitcoinTestFramework):
         self.setup_clean_chain = True
         self.num_nodes = 3
 
-        self.extra_args = [[], ["-minimumchainwork=0x65"], ["-minimumchainwork=0x65"]]
+        self.extra_args = [[], ["-minimumchainwork=0x6500"], ["-minimumchainwork=0x6500"]]
         self.node_min_work = [0, 101, 101]
 
     def setup_network(self):

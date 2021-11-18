@@ -591,6 +591,7 @@ class FullBlockTest(BitcoinTestFramework):
         height = self.block_heights[self.tip.sha256] + 1
         coinbase = create_coinbase(height, self.coinbase_pubkey)
         b44 = CBlock()
+        b44.set_base_version(4)
         b44.nTime = self.tip.nTime + 1
         b44.hashPrevBlock = self.tip.sha256
         b44.nBits = 0x207fffff
@@ -607,6 +608,7 @@ class FullBlockTest(BitcoinTestFramework):
         self.log.info("Reject a block with a non-coinbase as the first tx")
         non_coinbase = self.create_tx(out[15], 0, 1)
         b45 = CBlock()
+        b45.set_base_version(4)
         b45.nTime = self.tip.nTime + 1
         b45.hashPrevBlock = self.tip.sha256
         b45.nBits = 0x207fffff
@@ -621,6 +623,7 @@ class FullBlockTest(BitcoinTestFramework):
         self.log.info("Reject a block with no transactions")
         self.move_tip(44)
         b46 = CBlock()
+        b46.set_base_version(4)
         b46.nTime = b44.nTime + 1
         b46.hashPrevBlock = b44.sha256
         b46.nBits = 0x207fffff
@@ -811,7 +814,7 @@ class FullBlockTest(BitcoinTestFramework):
         self.log.info("Reject a block with a transaction with outputs > inputs")
         self.move_tip(57)
         b59 = self.next_block(59)
-        tx = self.create_and_sign_transaction(out[17], 51 * COIN)
+        tx = self.create_and_sign_transaction(out[17], 5001 * COIN)
         b59 = self.update_block(59, [tx])
         self.send_blocks([b59], success=False, reject_reason='bad-txns-in-belowout', reconnect=True)
 
@@ -821,39 +824,10 @@ class FullBlockTest(BitcoinTestFramework):
         self.send_blocks([b60], True)
         self.save_spendable_output()
 
-        # Test BIP30 (reject duplicate)
-        #
-        # -> b39 (11) -> b42 (12) -> b43 (13) -> b53 (14) -> b55 (15) -> b57 (16) -> b60 ()
-        #                                                                                  \-> b61 ()
-        #
-        # Blocks are not allowed to contain a transaction whose id matches that of an earlier,
-        # not-fully-spent transaction in the same chain. To test, make identical coinbases;
-        # the second one should be rejected. See also CVE-2012-1909.
-        #
-        self.log.info("Reject a block with a transaction with a duplicate hash of a previous transaction (BIP30)")
-        self.move_tip(60)
-        b61 = self.next_block(61)
-        b61.vtx[0].vin[0].scriptSig = DUPLICATE_COINBASE_SCRIPT_SIG
-        b61.vtx[0].rehash()
-        b61 = self.update_block(61, [])
-        assert_equal(duplicate_tx.serialize(), b61.vtx[0].serialize())
-        # BIP30 is always checked on regtest, regardless of the BIP34 activation height
-        self.send_blocks([b61], success=False, reject_reason='bad-txns-BIP30', reconnect=True)
-
-        # Test BIP30 (allow duplicate if spent)
-        #
-        # -> b57 (16) -> b60 ()
-        #            \-> b_spend_dup_cb (b_dup_cb) -> b_dup_2 ()
-        #
-        self.move_tip(57)
-        b_spend_dup_cb = self.next_block('spend_dup_cb')
-        tx = CTransaction()
-        tx.vin.append(CTxIn(COutPoint(duplicate_tx.sha256, 0)))
-        tx.vout.append(CTxOut(0, CScript([OP_TRUE])))
-        self.sign_tx(tx, duplicate_tx)
-        tx.rehash()
-        b_spend_dup_cb = self.update_block('spend_dup_cb', [tx])
-
+        # Upstream Bitcoin tests BIP30 here.  We cannot do that, as BIP34 is
+        # already activated (due to activating segwit).  We still add a block
+        # 'dup_2', which is the upstream next block referenced in the
+        # following tests.
         b_dup_2 = self.next_block('dup_2')
         b_dup_2.vtx[0].vin[0].scriptSig = DUPLICATE_COINBASE_SCRIPT_SIG
         b_dup_2.vtx[0].rehash()
@@ -863,6 +837,7 @@ class FullBlockTest(BitcoinTestFramework):
         self.send_blocks([b_spend_dup_cb, b_dup_2], success=True)
         # The duplicate has less confirmations
         assert_equal(self.nodes[0].gettxout(txid=duplicate_tx.hash, n=0)['confirmations'], 1)
+        self.send_blocks([b_dup_2], success=True)
 
         # Test tx.isFinal is properly rejected (not an exhaustive tx.isFinal test, that should be in data-driven transaction tests)
         #
@@ -1265,10 +1240,10 @@ class FullBlockTest(BitcoinTestFramework):
         b89a = self.update_block("89a", [tx])
         self.send_blocks([b89a], success=False, reject_reason='bad-txns-inputs-missingorspent', reconnect=True)
 
-        self.log.info("Test a re-org of one week's worth of blocks (1088 blocks)")
+        self.log.info("Test a re-org of a large amount of blocks (144 blocks)")
 
         self.move_tip(88)
-        LARGE_REORG_SIZE = 1088
+        LARGE_REORG_SIZE = 144
         blocks = []
         spend = out[32]
         for i in range(89, LARGE_REORG_SIZE + 89):
@@ -1307,7 +1282,7 @@ class FullBlockTest(BitcoinTestFramework):
 
         self.log.info("Reject a block with an invalid block header version")
         b_v1 = self.next_block('b_v1', version=1)
-        self.send_blocks([b_v1], success=False, force_send=True, reject_reason='bad-version(0x00000001)', reconnect=True)
+        self.send_blocks([b_v1], success=False, force_send=True, reject_reason='bad-version(0x07e50001)', reconnect=True)
 
         self.move_tip(chain1_tip + 2)
         b_cb34 = self.next_block('b_cb34')

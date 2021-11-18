@@ -937,30 +937,6 @@ BOOST_AUTO_TEST_CASE(test_IsStandard)
     fIsBareMultisigStd = false;
     CheckIsNotStandard(t, "bare-multisig");
     fIsBareMultisigStd = DEFAULT_PERMIT_BAREMULTISIG;
-
-    // Check P2WPKH outputs dust threshold
-    t.vout[0].scriptPubKey = CScript() << OP_0 << ParseHex("ffffffffffffffffffffffffffffffffffffffff");
-    t.vout[0].nValue = 294;
-    CheckIsStandard(t);
-    t.vout[0].nValue = 293;
-    CheckIsNotStandard(t, "dust");
-
-    // Check P2WSH outputs dust threshold
-    t.vout[0].scriptPubKey = CScript() << OP_0 << ParseHex("ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-    t.vout[0].nValue = 330;
-    CheckIsStandard(t);
-    t.vout[0].nValue = 329;
-    CheckIsNotStandard(t, "dust");
-
-    // Check future Witness Program versions dust threshold
-    for (int op = OP_2; op <= OP_16; op += 1) {
-        t.vout[0].scriptPubKey = CScript() << (opcodetype)op << ParseHex("ffff");
-        t.vout[0].nValue = 240;
-        CheckIsStandard(t);
-
-        t.vout[0].nValue = 239;
-        CheckIsNotStandard(t, "dust");
-    }
 }
 
 BOOST_AUTO_TEST_SUITE_END()

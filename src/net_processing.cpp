@@ -100,8 +100,24 @@ static const int MAX_BLOCKS_IN_TRANSIT_PER_PEER = 16;
 /** Time during which a peer must stall block download progress before being disconnected. */
 static constexpr auto BLOCK_STALLING_TIMEOUT = 2s;
 /** Number of headers sent in one getheaders result. We rely on the assumption that if a peer sends
- *  less than this number, we reached its tip. Changing this value is a protocol upgrade. */
+ *  less than this number, we reached its tip. Changing this value is a protocol upgrade.
+ *
+ *  With a protocol upgrade, we now enforce an additional restriction on the
+ *  total size of a "headers" message (see below).  The absolute limit
+ *  on the number of headers still applies as well, so that we do not get
+ *  overloaded both with small and large headers.
+ */
 static const unsigned int MAX_HEADERS_RESULTS = 2000;
+/** Maximum size of a "headers" message.  This is enforced starting with
+ *  SIZE_HEADERS_LIMIT_VERSION peers and prevents overloading if we have
+ *  very large headers (due to auxpow).
+ */
+static const unsigned int MAX_HEADERS_SIZE = (6 << 20); // 6 MiB
+/** Size of a headers message that is the threshold for assuming that the
+ *  peer has more headers (even if we have less than MAX_HEADERS_RESULTS).
+ *  This is used starting with SIZE_HEADERS_LIMIT_VERSION peers.
+ */
+static const unsigned int THRESHOLD_HEADERS_SIZE = (4 << 20); // 4 MiB
 /** Maximum depth of blocks we're willing to serve as compact blocks to peers
  *  when requested. For older blocks, a regular BLOCK response will be sent. */
 static const int MAX_CMPCTBLOCK_DEPTH = 5;
@@ -949,12 +965,12 @@ bool PeerManagerImpl::TipMayBeStale()
     if (m_last_tip_update == 0) {
         m_last_tip_update = GetTime();
     }
-    return m_last_tip_update < GetTime() - consensusParams.nPowTargetSpacing * 3 && mapBlocksInFlight.empty();
+    return m_last_tip_update < GetTime() - consensusParams.nMultiAlgoTargetSpacing * 3 && mapBlocksInFlight.empty();
 }
 
 bool PeerManagerImpl::CanDirectFetch()
 {
-    return m_chainman.ActiveChain().Tip()->GetBlockTime() > GetAdjustedTime() - m_chainparams.GetConsensus().nPowTargetSpacing * 20;
+    return m_chainman.ActiveChain().Tip()->GetBlockTime() > GetAdjustedTime() - m_chainparams.GetConsensus().nMultiAlgoTargetSpacing * 20;
 }
 
 static bool PeerHasHeader(CNodeState *state, const CBlockIndex *pindex) EXCLUSIVE_LOCKS_REQUIRED(cs_main)
@@ -1028,8 +1044,8 @@ void PeerManagerImpl::FindNextBlocksToDownload(NodeId nodeid, unsigned int count
     if (state->pindexLastCommonBlock == state->pindexBestKnownBlock)
         return;
 
-    const Consensus::Params& consensusParams = m_chainparams.GetConsensus();
     std::vector<const CBlockIndex*> vToFetch;
+    const Consensus::Params& consensusParams = m_chainparams.GetConsensus();
     const CBlockIndex *pindexWalk = state->pindexLastCommonBlock;
     // Never fetch further than the best block we know the peer has, or more than BLOCK_DOWNLOAD_WINDOW + 1 beyond the last
     // linked block we have in common with this peer. The +1 is so we can detect stalling, namely if we would be able to
@@ -2046,6 +2062,17 @@ void PeerManagerImpl::ProcessHeadersMessage(CNode& pfrom, const Peer& peer,
         return;
     }
 
+    size_t nSize = 0;
+    for (const auto& header : headers) {
+        nSize += GetSerializeSize(header, PROTOCOL_VERSION);
+        if (pfrom.nVersion >= SIZE_HEADERS_LIMIT_VERSION
+              && nSize > MAX_HEADERS_SIZE) {
+            LOCK(cs_main);
+            Misbehaving(pfrom.GetId(), 20, strprintf("headers message size = %u", nSize));
+            return;
+        }
+    }
+
     bool received_new_header = false;
     const CBlockIndex *pindexLast = nullptr;
     {
@@ -2122,7 +2149,14 @@ void PeerManagerImpl::ProcessHeadersMessage(CNode& pfrom, const Peer& peer,
             nodestate->m_last_block_announcement = GetTime();
         }
 
-        if (nCount == MAX_HEADERS_RESULTS) {
+        bool maxSize = (nCount == MAX_HEADERS_RESULTS);
+        if (pfrom.nVersion >= SIZE_HEADERS_LIMIT_VERSION
+              && nSize >= THRESHOLD_HEADERS_SIZE)
+            maxSize = true;
+        // FIXME: This change (with hasNewHeaders) is rolled back in Blinkhash,
+        // but I think it should stay here for merge-mined coins.  Try to get
+        // it fixed again upstream and then update the fix.
+        if (maxSize && received_new_header) {
             // Headers message had its maximum size; the peer may have more headers.
             // TODO: optimize: if pindexLast is an ancestor of m_chainman.ActiveChain().Tip or pindexBestHeader, continue
             // from there instead.
@@ -3059,7 +3093,7 @@ void PeerManagerImpl::ProcessMessage(CNode& pfrom, const std::string& msg_type, 
             }
             // If pruning, don't inv blocks unless we have on disk and are likely to still have
             // for some reasonable time window (1 hour) that block relay might require.
-            const int nPrunedBlocksLikelyToHave = MIN_BLOCKS_TO_KEEP - 3600 / m_chainparams.GetConsensus().nPowTargetSpacing;
+            const int nPrunedBlocksLikelyToHave = MIN_BLOCKS_TO_KEEP - 3600 / m_chainparams.GetConsensus().nMultiAlgoTargetSpacing;
             if (fPruneMode && (!(pindex->nStatus & BLOCK_HAVE_DATA) || pindex->nHeight <= m_chainman.ActiveChain().Tip()->nHeight - nPrunedBlocksLikelyToHave))
             {
                 LogPrint(BCLog::NET, " getblocks stopping, pruned or too old block at %d %s\n", pindex->nHeight, pindex->GetBlockHash().ToString());
@@ -3170,28 +3204,44 @@ void PeerManagerImpl::ProcessMessage(CNode& pfrom, const std::string& msg_type, 
 
         // we must use CBlocks, as CBlockHeaders won't include the 0x00 nTx count at the end
         std::vector<CBlock> vHeaders;
-        int nLimit = MAX_HEADERS_RESULTS;
+        unsigned nCount = 0;
+        unsigned nSize = 0;
         LogPrint(BCLog::NET, "getheaders %d to %s from peer=%d\n", (pindex ? pindex->nHeight : -1), hashStop.IsNull() ? "end" : hashStop.ToString(), pfrom.GetId());
         for (; pindex; pindex = m_chainman.ActiveChain().Next(pindex))
         {
-            vHeaders.push_back(pindex->GetBlockHeader());
-            if (--nLimit <= 0 || pindex->GetBlockHash() == hashStop)
+            const CBlockHeader header = pindex->GetBlockHeader(m_chainparams.GetConsensus());
+            ++nCount;
+            nSize += GetSerializeSize(header, PROTOCOL_VERSION);
+            vHeaders.push_back(header);
+            if (nCount >= MAX_HEADERS_RESULTS || pindex->GetBlockHash() == hashStop)
+                break;
+            if (pfrom.nVersion >= SIZE_HEADERS_LIMIT_VERSION && nSize >= THRESHOLD_HEADERS_SIZE)
                 break;
         }
-        // pindex can be nullptr either if we sent m_chainman.ActiveChain().Tip() OR
-        // if our peer has m_chainman.ActiveChain().Tip() (and thus we are sending an empty
-        // headers message). In both cases it's safe to update
-        // pindexBestHeaderSent to be our tip.
-        //
-        // It is important that we simply reset the BestHeaderSent value here,
-        // and not max(BestHeaderSent, newHeaderSent). We might have announced
-        // the currently-being-connected tip using a compact block, which
-        // resulted in the peer sending a headers request, which we respond to
-        // without the new block. By resetting the BestHeaderSent, we ensure we
-        // will re-announce the new block via headers (or compact blocks again)
-        // in the SendMessages logic.
-        nodestate->pindexBestHeaderSent = pindex ? pindex : m_chainman.ActiveChain().Tip();
-        m_connman.PushMessage(&pfrom, msgMaker.Make(NetMsgType::HEADERS, vHeaders));
+        /* Check maximum headers size before pushing the message
+           if the peer enforces it.  This should not fail since we
+           break above in the loop at the threshold and the threshold
+           should be small enough in comparison to the hard max size.
+           Do it nevertheless to be sure.  */
+        if (pfrom.nVersion >= SIZE_HEADERS_LIMIT_VERSION && nSize > MAX_HEADERS_SIZE)
+            LogPrintf("ERROR: not pushing 'headers', too large\n");
+        else {
+            LogPrint(BCLog::NET, "pushing %u headers, %u bytes\n", nCount, nSize);
+            // pindex can be nullptr either if we sent ::ChainActive().Tip() OR
+            // if our peer has ::ChainActive().Tip() (and thus we are sending an empty
+            // headers message). In both cases it's safe to update
+            // pindexBestHeaderSent to be our tip.
+            //
+            // It is important that we simply reset the BestHeaderSent value here,
+            // and not max(BestHeaderSent, newHeaderSent). We might have announced
+            // the currently-being-connected tip using a compact block, which
+            // resulted in the peer sending a headers request, which we respond to
+            // without the new block. By resetting the BestHeaderSent, we ensure we
+            // will re-announce the new block via headers (or compact blocks again)
+            // in the SendMessages logic.
+            nodestate->pindexBestHeaderSent = pindex ? pindex : m_chainman.ActiveChain().Tip();
+            m_connman.PushMessage(&pfrom, msgMaker.Make(NetMsgType::HEADERS, vHeaders));
+        }
         return;
     }
 
@@ -4550,7 +4600,7 @@ bool PeerManagerImpl::SendMessages(CNode* pto)
                         // Convert HEADERS_DOWNLOAD_TIMEOUT_PER_HEADER to microseconds before scaling
                         // to maintain precision
                         std::chrono::microseconds{HEADERS_DOWNLOAD_TIMEOUT_PER_HEADER} *
-                        (GetAdjustedTime() - pindexBestHeader->GetBlockTime()) / consensusParams.nPowTargetSpacing
+                        (GetAdjustedTime() - pindexBestHeader->GetBlockTime()) / consensusParams.nMultiAlgoTargetSpacing
                     );
                 nSyncStarted++;
                 const CBlockIndex *pindexStart = pindexBestHeader;
@@ -4618,14 +4668,14 @@ bool PeerManagerImpl::SendMessages(CNode* pto)
                     pBestIndex = pindex;
                     if (fFoundStartingHeader) {
                         // add this to the headers message
-                        vHeaders.push_back(pindex->GetBlockHeader());
+                        vHeaders.push_back(pindex->GetBlockHeader(consensusParams));
                     } else if (PeerHasHeader(&state, pindex)) {
                         continue; // keep looking for the first new block
                     } else if (pindex->pprev == nullptr || PeerHasHeader(&state, pindex->pprev)) {
                         // Peer doesn't have this header but they do have the prior one.
                         // Start sending headers.
                         fFoundStartingHeader = true;
-                        vHeaders.push_back(pindex->GetBlockHeader());
+                        vHeaders.push_back(pindex->GetBlockHeader(consensusParams));
                     } else {
                         // Peer doesn't have this header or the prior one -- nothing will
                         // connect, so bail out.
@@ -4875,7 +4925,7 @@ bool PeerManagerImpl::SendMessages(CNode* pto)
         if (state.vBlocksInFlight.size() > 0) {
             QueuedBlock &queuedBlock = state.vBlocksInFlight.front();
             int nOtherPeersWithValidatedDownloads = m_peers_downloading_from - 1;
-            if (current_time > state.m_downloading_since + std::chrono::seconds{consensusParams.nPowTargetSpacing} * (BLOCK_DOWNLOAD_TIMEOUT_BASE + BLOCK_DOWNLOAD_TIMEOUT_PER_PEER * nOtherPeersWithValidatedDownloads)) {
+            if (current_time > state.m_downloading_since + std::chrono::seconds{consensusParams.nMultiAlgoTargetSpacing} * (BLOCK_DOWNLOAD_TIMEOUT_BASE + BLOCK_DOWNLOAD_TIMEOUT_PER_PEER * nOtherPeersWithValidatedDownloads)) {
                 LogPrintf("Timeout downloading block %s from peer=%d, disconnecting\n", queuedBlock.pindex->GetBlockHash().ToString(), pto->GetId());
                 pto->fDisconnect = true;
                 return true;

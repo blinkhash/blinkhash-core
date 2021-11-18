@@ -16,7 +16,6 @@
 #include <signet.h>
 #include <streams.h>
 #include <undo.h>
-#include <util/syscall_sandbox.h>
 #include <util/system.h>
 #include <validation.h>
 
@@ -68,14 +67,13 @@ void CleanupBlockRevFiles()
     LogPrintf("Removing unusable blk?????.dat and rev?????.dat files for -reindex with -prune\n");
     fs::path blocksdir = gArgs.GetBlocksDirPath();
     for (fs::directory_iterator it(blocksdir); it != fs::directory_iterator(); it++) {
-        const std::string path = fs::PathToString(it->path().filename());
         if (fs::is_regular_file(*it) &&
-            path.length() == 12 &&
-            path.substr(8,4) == ".dat")
+            it->path().filename().string().length() == 12 &&
+            it->path().filename().string().substr(8,4) == ".dat")
         {
-            if (path.substr(0, 3) == "blk") {
-                mapBlockFiles[path.substr(3, 5)] = it->path();
-            } else if (path.substr(0, 3) == "rev") {
+            if (it->path().filename().string().substr(0, 3) == "blk") {
+                mapBlockFiles[it->path().filename().string().substr(3, 5)] = it->path();
+            } else if (it->path().filename().string().substr(0, 3) == "rev") {
                 remove(it->path());
             }
         }
@@ -87,7 +85,7 @@ void CleanupBlockRevFiles()
     // start removing block files.
     int nContigCounter = 0;
     for (const std::pair<const std::string, fs::path>& item : mapBlockFiles) {
-        if (LocaleIndependentAtoi<int>(item.first) == nContigCounter) {
+        if (atoi(item.first) == nContigCounter) {
             nContigCounter++;
             continue;
         }
@@ -205,7 +203,7 @@ void UnlinkPrunedFiles(const std::set<int>& setFilesToPrune)
         FlatFilePos pos(*it, 0);
         fs::remove(BlockFileSeq().FileName(pos));
         fs::remove(UndoFileSeq().FileName(pos));
-        LogPrint(BCLog::BLOCKSTORE, "Prune: %s deleted blk/rev (%05u)\n", __func__, *it);
+        LogPrintf("Prune: %s deleted blk/rev (%05u)\n", __func__, *it);
     }
 }
 
@@ -262,7 +260,7 @@ bool FindBlockPos(FlatFilePos& pos, unsigned int nAddSize, unsigned int nHeight,
 
     if ((int)nFile != nLastBlockFile) {
         if (!fKnown) {
-            LogPrint(BCLog::BLOCKSTORE, "Leaving block file %i: %s\n", nLastBlockFile, vinfoBlockFile[nLastBlockFile].ToString());
+            LogPrint(BCLog::VALIDATION, "Leaving block file %i: %s\n", nLastBlockFile, vinfoBlockFile[nLastBlockFile].ToString());
         }
         FlushBlockFile(!fKnown, finalize_undo);
         nLastBlockFile = nFile;
@@ -364,7 +362,11 @@ bool WriteUndoDataForBlock(const CBlockUndo& blockundo, BlockValidationState& st
     return true;
 }
 
-bool ReadBlockFromDisk(CBlock& block, const FlatFilePos& pos, const Consensus::Params& consensusParams)
+/* Generic implementation of block reading that can handle
+   both a block and its header.  */
+
+template<typename T>
+static bool ReadBlockOrHeader(T& block, const FlatFilePos& pos, const Consensus::Params& consensusParams)
 {
     block.SetNull();
 
@@ -382,7 +384,7 @@ bool ReadBlockFromDisk(CBlock& block, const FlatFilePos& pos, const Consensus::P
     }
 
     // Check the header
-    if (!CheckProofOfWork(block.GetHash(), block.nBits, consensusParams)) {
+    if (!CheckProofOfWork(block, consensusParams)) {
         return error("ReadBlockFromDisk: Errors in block header at %s", pos.ToString());
     }
 
@@ -394,18 +396,38 @@ bool ReadBlockFromDisk(CBlock& block, const FlatFilePos& pos, const Consensus::P
     return true;
 }
 
-bool ReadBlockFromDisk(CBlock& block, const CBlockIndex* pindex, const Consensus::Params& consensusParams)
+template<typename T>
+static bool ReadBlockOrHeader(T& block, const CBlockIndex* pindex, const Consensus::Params& consensusParams)
 {
-    const FlatFilePos block_pos{WITH_LOCK(cs_main, return pindex->GetBlockPos())};
+    FlatFilePos blockPos;
+    {
+        LOCK(cs_main);
+        blockPos = pindex->GetBlockPos();
+    }
 
-    if (!ReadBlockFromDisk(block, block_pos, consensusParams)) {
+    if (!ReadBlockOrHeader(block, blockPos, consensusParams)) {
         return false;
     }
     if (block.GetHash() != pindex->GetBlockHash()) {
         return error("ReadBlockFromDisk(CBlock&, CBlockIndex*): GetHash() doesn't match index for %s at %s",
-                     pindex->ToString(), block_pos.ToString());
+                pindex->ToString(), pindex->GetBlockPos().ToString());
     }
     return true;
+}
+
+bool ReadBlockFromDisk(CBlock& block, const FlatFilePos& pos, const Consensus::Params& consensusParams)
+{
+    return ReadBlockOrHeader(block, pos, consensusParams);
+}
+
+bool ReadBlockFromDisk(CBlock& block, const CBlockIndex* pindex, const Consensus::Params& consensusParams)
+{
+    return ReadBlockOrHeader(block, pindex, consensusParams);
+}
+
+bool ReadBlockHeaderFromDisk(CBlockHeader& block, const CBlockIndex* pindex, const Consensus::Params& consensusParams)
+{
+    return ReadBlockOrHeader(block, pindex, consensusParams);
 }
 
 bool ReadRawBlockFromDisk(std::vector<uint8_t>& block, const FlatFilePos& pos, const CMessageHeader::MessageStartChars& message_start)
@@ -425,13 +447,13 @@ bool ReadRawBlockFromDisk(std::vector<uint8_t>& block, const FlatFilePos& pos, c
 
         if (memcmp(blk_start, message_start, CMessageHeader::MESSAGE_START_SIZE)) {
             return error("%s: Block magic mismatch for %s: %s versus expected %s", __func__, pos.ToString(),
-                         HexStr(blk_start),
-                         HexStr(message_start));
+                    HexStr(blk_start),
+                    HexStr(message_start));
         }
 
         if (blk_size > MAX_SIZE) {
             return error("%s: Block data is larger than maximum deserialization size for %s: %s versus %s", __func__, pos.ToString(),
-                         blk_size, MAX_SIZE);
+                    blk_size, MAX_SIZE);
         }
 
         block.resize(blk_size); // Zeroing of memory is intentional here
@@ -491,7 +513,6 @@ struct CImportingNow {
 
 void ThreadImport(ChainstateManager& chainman, std::vector<fs::path> vImportFiles, const ArgsManager& args)
 {
-    SetSyscallSandboxPolicy(SyscallSandboxPolicy::INITIALIZATION_LOAD_BLOCKS);
     ScheduleBatchPriority();
 
     {
@@ -528,14 +549,14 @@ void ThreadImport(ChainstateManager& chainman, std::vector<fs::path> vImportFile
         for (const fs::path& path : vImportFiles) {
             FILE* file = fsbridge::fopen(path, "rb");
             if (file) {
-                LogPrintf("Importing blocks file %s...\n", fs::PathToString(path));
+                LogPrintf("Importing blocks file %s...\n", path.string());
                 chainman.ActiveChainstate().LoadExternalBlockFile(file);
                 if (ShutdownRequested()) {
                     LogPrintf("Shutdown requested. Exit %s\n", __func__);
                     return;
                 }
             } else {
-                LogPrintf("Warning: Could not open blocks file %s\n", fs::PathToString(path));
+                LogPrintf("Warning: Could not open blocks file %s\n", path.string());
             }
         }
 

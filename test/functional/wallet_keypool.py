@@ -10,6 +10,9 @@ from decimal import Decimal
 from test_framework.test_framework import BitcoinTestFramework
 from test_framework.util import assert_equal, assert_raises_rpc_error
 
+from test_framework.auxpow import reverseHex
+from test_framework.auxpow_testing import computeAuxpow
+
 class KeyPoolTest(BitcoinTestFramework):
     def set_test_params(self):
         self.num_nodes = 1
@@ -80,6 +83,9 @@ class KeyPoolTest(BitcoinTestFramework):
         if not self.options.descriptors:
             assert addr_data['hdseedid'] == wallet_info['hdseedid']
         assert_raises_rpc_error(-12, "Error: Keypool ran out, please call keypoolrefill first", nodes[0].getnewaddress)
+
+        # test draining with getauxblock
+        self.test_auxpow(nodes)
 
         # put six (plus 2) new keys in the keypool (100% external-, +100% internal-keys, 1 in min)
         nodes[0].walletpassphrase('test', 12000)
@@ -201,6 +207,38 @@ class KeyPoolTest(BitcoinTestFramework):
         res = w2.walletcreatefundedpsbt(inputs=[], outputs=[{destination: 0.00010000}], options={"subtractFeeFromOutputs": [0], "feeRate": 0.00010, "changeAddress": addr.pop()})
         assert_equal("psbt" in res, True)
 
+    def test_auxpow(self, nodes):
+        """
+        Test behaviour of getauxpow.  Calling getauxpow should reserve
+        a key from the pool, but it should be released again if the
+        created block is not actually used.  On the other hand, if the
+        auxpow is submitted and turned into a block, the keypool should
+        be drained.
+        """
+
+        extraKeys = 0
+        if self.options.descriptors:
+          extraKeys = 12
+
+        nodes[0].walletpassphrase('test', 12000)
+        nodes[0].keypoolrefill(1)
+        nodes[0].walletlock()
+        assert_equal (nodes[0].getwalletinfo()['keypoolsize'], 1 + extraKeys)
+
+        nodes[0].getauxblock()
+        assert_equal (nodes[0].getwalletinfo()['keypoolsize'], extraKeys)
+        nodes[0].generate(1)
+        assert_equal (nodes[0].getwalletinfo()['keypoolsize'], extraKeys)
+        auxblock = nodes[0].getauxblock()
+        assert_equal (nodes[0].getwalletinfo()['keypoolsize'], extraKeys)
+
+        target = reverseHex(auxblock['_target'])
+        solved = computeAuxpow(auxblock['hash'], target, True)
+        res = nodes[0].getauxblock(auxblock['hash'], solved)
+        assert res
+        assert_equal(nodes[0].getwalletinfo()['keypoolsize'], extraKeys)
+
+        assert_raises_rpc_error(-12, 'Keypool ran out', nodes[0].getauxblock)
 
 if __name__ == '__main__':
     KeyPoolTest().main()

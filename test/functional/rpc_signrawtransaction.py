@@ -264,76 +264,6 @@ class SignRawTransactionsTest(BitcoinTestFramework):
         txn = self.nodes[0].signrawtransactionwithwallet(hex_str, prev_txs)
         assert txn["complete"]
 
-    def test_signing_with_csv(self):
-        self.log.info("Test signing a transaction containing a fully signed CSV input")
-        self.nodes[0].walletpassphrase("password", 9999)
-        getcontext().prec = 8
-
-        # Make sure CSV is active
-        assert self.nodes[0].getblockchaininfo()['softforks']['csv']['active']
-
-        # Create a P2WSH script with CSV
-        script = CScript([1, OP_CHECKSEQUENCEVERIFY, OP_DROP])
-        address = script_to_p2wsh(script)
-
-        # Fund that address and make the spend
-        txid = self.nodes[0].sendtoaddress(address, 1)
-        vout = find_vout_for_address(self.nodes[0], txid, address)
-        self.generate(self.nodes[0], 1)
-        utxo = self.nodes[0].listunspent()[0]
-        amt = Decimal(1) + utxo["amount"] - Decimal(0.00001)
-        tx = self.nodes[0].createrawtransaction(
-            [{"txid": txid, "vout": vout, "sequence": 1},{"txid": utxo["txid"], "vout": utxo["vout"]}],
-            [{self.nodes[0].getnewaddress(): amt}],
-            self.nodes[0].getblockcount()
-        )
-
-        # Set the witness script
-        ctx = tx_from_hex(tx)
-        ctx.wit.vtxinwit.append(CTxInWitness())
-        ctx.wit.vtxinwit[0].scriptWitness.stack = [CScript([OP_TRUE]), script]
-        tx = ctx.serialize_with_witness().hex()
-
-        # Sign and send the transaction
-        signed = self.nodes[0].signrawtransactionwithwallet(tx)
-        assert_equal(signed["complete"], True)
-        self.nodes[0].sendrawtransaction(signed["hex"])
-
-    def test_signing_with_cltv(self):
-        self.log.info("Test signing a transaction containing a fully signed CLTV input")
-        self.nodes[0].walletpassphrase("password", 9999)
-        getcontext().prec = 8
-
-        # Make sure CLTV is active
-        assert self.nodes[0].getblockchaininfo()['softforks']['bip65']['active']
-
-        # Create a P2WSH script with CLTV
-        script = CScript([100, OP_CHECKLOCKTIMEVERIFY, OP_DROP])
-        address = script_to_p2wsh(script)
-
-        # Fund that address and make the spend
-        txid = self.nodes[0].sendtoaddress(address, 1)
-        vout = find_vout_for_address(self.nodes[0], txid, address)
-        self.generate(self.nodes[0], 1)
-        utxo = self.nodes[0].listunspent()[0]
-        amt = Decimal(1) + utxo["amount"] - Decimal(0.00001)
-        tx = self.nodes[0].createrawtransaction(
-            [{"txid": txid, "vout": vout},{"txid": utxo["txid"], "vout": utxo["vout"]}],
-            [{self.nodes[0].getnewaddress(): amt}],
-            self.nodes[0].getblockcount()
-        )
-
-        # Set the witness script
-        ctx = tx_from_hex(tx)
-        ctx.wit.vtxinwit.append(CTxInWitness())
-        ctx.wit.vtxinwit[0].scriptWitness.stack = [CScript([OP_TRUE]), script]
-        tx = ctx.serialize_with_witness().hex()
-
-        # Sign and send the transaction
-        signed = self.nodes[0].signrawtransactionwithwallet(tx)
-        assert_equal(signed["complete"], True)
-        self.nodes[0].sendrawtransaction(signed["hex"])
-
     def run_test(self):
         self.successful_signing_test()
         self.script_verification_error_test()
@@ -341,9 +271,6 @@ class SignRawTransactionsTest(BitcoinTestFramework):
         self.OP_1NEGATE_test()
         self.test_with_lock_outputs()
         self.test_fully_signed_tx()
-        self.test_signing_with_csv()
-        self.test_signing_with_cltv()
-
 
 if __name__ == '__main__':
     SignRawTransactionsTest().main()

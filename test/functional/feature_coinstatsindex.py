@@ -54,7 +54,7 @@ class CoinStatsIndexTest(BitcoinTestFramework):
         self._test_index_rejects_hash_serialized()
 
     def block_sanity_check(self, block_info):
-        block_subsidy = 50
+        block_subsidy = 5000
         assert_equal(
             block_info['prevout_spent'] + block_subsidy,
             block_info['new_outputs_ex_coinbase'] + block_info['coinbase'] + block_info['unspendable']
@@ -115,12 +115,12 @@ class CoinStatsIndexTest(BitcoinTestFramework):
             res4 = index_node.gettxoutsetinfo(hash_option, 0)
             assert_equal(res4['total_unspendable_amount'], 50)
             assert_equal(res4['block_info'], {
-                'unspendable': 50,
+                'unspendable': 5000,
                 'prevout_spent': 0,
                 'new_outputs_ex_coinbase': 0,
                 'coinbase': 0,
                 'unspendables': {
-                    'genesis_block': 50,
+                    'genesis_block': 5000,
                     'bip30': 0,
                     'scripts': 0,
                     'unclaimed_rewards': 0
@@ -130,12 +130,12 @@ class CoinStatsIndexTest(BitcoinTestFramework):
 
             # Test an older block height that included a normal tx
             res5 = index_node.gettxoutsetinfo(hash_option, 102)
-            assert_equal(res5['total_unspendable_amount'], 50)
+            assert_equal(res5['total_unspendable_amount'], 5000)
             assert_equal(res5['block_info'], {
                 'unspendable': 0,
-                'prevout_spent': 50,
-                'new_outputs_ex_coinbase': Decimal('49.99995560'),
-                'coinbase': Decimal('50.00004440'),
+                'prevout_spent': 5000,
+                'new_outputs_ex_coinbase': Decimal('4999.99995560'),
+                'coinbase': Decimal('5000.00004440'),
                 'unspendables': {
                     'genesis_block': 0,
                     'bip30': 0,
@@ -175,9 +175,9 @@ class CoinStatsIndexTest(BitcoinTestFramework):
             assert_equal(res6['total_unspendable_amount'], Decimal('70.99000000'))
             assert_equal(res6['block_info'], {
                 'unspendable': Decimal('20.99000000'),
-                'prevout_spent': 111,
-                'new_outputs_ex_coinbase': Decimal('89.99993620'),
-                'coinbase': Decimal('50.01006380'),
+                'prevout_spent': Decimal('5011.00000000'),
+                'new_outputs_ex_coinbase': Decimal('4989.99996560'),
+                'coinbase': Decimal('5000.01003441'),
                 'unspendables': {
                     'genesis_block': 0,
                     'bip30': 0,
@@ -203,9 +203,9 @@ class CoinStatsIndexTest(BitcoinTestFramework):
 
         for hash_option in index_hash_options:
             res7 = index_node.gettxoutsetinfo(hash_option, 109)
-            assert_equal(res7['total_unspendable_amount'], Decimal('80.99000000'))
+            assert_equal(res7['total_unspendable_amount'], Decimal('9980.98999999'))
             assert_equal(res7['block_info'], {
-                'unspendable': 10,
+                'unspendable': 4960,
                 'prevout_spent': 0,
                 'new_outputs_ex_coinbase': 0,
                 'coinbase': 40,
@@ -213,7 +213,7 @@ class CoinStatsIndexTest(BitcoinTestFramework):
                     'genesis_block': 0,
                     'bip30': 0,
                     'scripts': 0,
-                    'unclaimed_rewards': 10
+                    'unclaimed_rewards': 4960
                 }
             })
             self.block_sanity_check(res7['block_info'])

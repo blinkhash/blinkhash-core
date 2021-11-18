@@ -139,7 +139,7 @@ class RawTransactionsTest(BitcoinTestFramework):
     def test_change_position(self):
         """Ensure setting changePosition in fundraw with an exact match is handled properly."""
         self.log.info("Test fundrawtxn changePosition option")
-        rawmatch = self.nodes[2].createrawtransaction([], {self.nodes[2].getnewaddress():50})
+        rawmatch = self.nodes[2].createrawtransaction([], {self.nodes[2].getnewaddress():5000})
         rawmatch = self.nodes[2].fundrawtransaction(rawmatch, {"changePosition":1, "subtractFeeFromOutputs":[0]})
         assert_equal(rawmatch["changepos"], -1)
 
@@ -622,7 +622,7 @@ class RawTransactionsTest(BitcoinTestFramework):
         self.generate(self.nodes[1], 1)
 
         # Make sure funds are received at node1.
-        assert_equal(oldBalance+Decimal('51.10000000'), self.nodes[0].getbalance())
+        assert_equal(oldBalance+Decimal('5001.10000000'), self.nodes[0].getbalance())
 
     def test_many_inputs_fee(self):
         """Multiple (~19) inputs tx test | Compare fee."""
@@ -672,7 +672,7 @@ class RawTransactionsTest(BitcoinTestFramework):
         fundedAndSignedTx = self.nodes[1].signrawtransactionwithwallet(fundedTx['hex'])
         self.nodes[1].sendrawtransaction(fundedAndSignedTx['hex'])
         self.generate(self.nodes[1], 1)
-        assert_equal(oldBalance+Decimal('50.19000000'), self.nodes[0].getbalance()) #0.19+block reward
+        assert_equal(oldBalance+Decimal('5000.19000000'), self.nodes[0].getbalance()) #0.19+block reward
 
     def test_op_return(self):
         self.log.info("Test fundrawtxn with OP_RETURN and no vin")

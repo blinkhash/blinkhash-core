@@ -101,7 +101,7 @@ class BIP66Test(BitcoinTestFramework):
         tip = block.sha256
         block_time += 1
         block = create_block(tip, create_coinbase(DERSIG_HEIGHT), block_time)
-        block.nVersion = 2
+        block.set_base_version(2)
         block.solve()
 
         with self.nodes[0].assert_debug_log(expected_msgs=[f'{block.hash}, bad-version(0x00000002)']):
@@ -110,7 +110,7 @@ class BIP66Test(BitcoinTestFramework):
             peer.sync_with_ping()
 
         self.log.info("Test that transactions with non-DER signatures cannot appear in a block")
-        block.nVersion = 4
+        block.set_base_version(4)
 
         spendtx = self.create_tx(self.coinbase_txids[1])
         unDERify(spendtx)

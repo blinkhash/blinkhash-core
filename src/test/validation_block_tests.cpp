@@ -4,6 +4,7 @@
 
 #include <boost/test/unit_test.hpp>
 
+#include <auxpow.h>
 #include <chainparams.h>
 #include <consensus/merkle.h>
 #include <consensus/validation.h>
@@ -63,7 +64,7 @@ std::shared_ptr<CBlock> MinerTestingSetup::Block(const uint256& prev_hash)
     static int i = 0;
     static uint64_t time = Params().GenesisBlock().nTime;
 
-    auto ptemplate = BlockAssembler(m_node.chainman->ActiveChainstate(), *m_node.mempool, Params()).CreateNewBlock(CScript{} << i++ << OP_TRUE);
+    auto ptemplate = BlockAssembler(m_node.chainman->ActiveChainstate(), *m_node.mempool, Params()).CreateNewBlock(CScript{} << i++ << OP_TRUE, ALGO_SHA256D);
     auto pblock = std::make_shared<CBlock>(ptemplate->block);
     pblock->hashPrevBlock = prev_hash;
     pblock->nTime = ++time;
@@ -86,13 +87,13 @@ std::shared_ptr<CBlock> MinerTestingSetup::Block(const uint256& prev_hash)
 
 std::shared_ptr<CBlock> MinerTestingSetup::FinalizeBlock(std::shared_ptr<CBlock> pblock)
 {
-    const CBlockIndex* prev_block{WITH_LOCK(::cs_main, return m_node.chainman->m_blockman.LookupBlockIndex(pblock->hashPrevBlock))};
-    GenerateCoinbaseCommitment(*pblock, prev_block, Params().GetConsensus());
+    LOCK(cs_main); // For m_node.chainman->m_blockman.LookupBlockIndex
+    GenerateCoinbaseCommitment(*pblock, m_node.chainman->m_blockman.LookupBlockIndex(pblock->hashPrevBlock), Params().GetConsensus());
 
     pblock->hashMerkleRoot = BlockMerkleRoot(*pblock);
-
-    while (!CheckProofOfWork(pblock->GetHash(), pblock->nBits, Params().GetConsensus())) {
-        ++(pblock->nNonce);
+    auto& miningHeader = CAuxPow::initAuxPow(*pblock);
+    while (!CheckProofOfWork(miningHeader.GetHash(), pblock->nBits, Params().GetConsensus())) {
+        ++(miningHeader.nNonce);
     }
 
     // submit block header, so that miner can get the block height from the
@@ -325,7 +326,7 @@ BOOST_AUTO_TEST_CASE(witness_commitment_index)
 {
     CScript pubKey;
     pubKey << 1 << OP_TRUE;
-    auto ptemplate = BlockAssembler(m_node.chainman->ActiveChainstate(), *m_node.mempool, Params()).CreateNewBlock(pubKey);
+    auto ptemplate = BlockAssembler(m_node.chainman->ActiveChainstate(), *m_node.mempool, Params()).CreateNewBlock(pubKey, ALGO_SHA256D);
     CBlock pblock = ptemplate->block;
 
     CTxOut witness;

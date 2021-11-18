@@ -479,7 +479,7 @@ class RawTransactionsTest(BitcoinTestFramework):
         rawTx = self.nodes[0].decoderawtransaction(rawTxSigned['hex'])
         self.sync_all()
         self.generate(self.nodes[0], 1)
-        assert_equal(self.nodes[0].getbalance(), bal + Decimal('50.00000000') + Decimal('2.19000000'))  # block reward + tx
+        assert_equal(self.nodes[0].getbalance(), bal + Decimal('5000.00000000') + Decimal('2.19000000'))  # block reward + tx
 
         # 2of2 test for combining transactions
         bal = self.nodes[2].getbalance()
@@ -522,7 +522,7 @@ class RawTransactionsTest(BitcoinTestFramework):
         rawTx2 = self.nodes[0].decoderawtransaction(rawTxComb)
         self.sync_all()
         self.generate(self.nodes[0], 1)
-        assert_equal(self.nodes[0].getbalance(), bal + Decimal('50.00000000') + Decimal('2.19000000'))  # block reward + tx
+        assert_equal(self.nodes[0].getbalance(), bal + Decimal('5000.00000000') + Decimal('2.19000000'))  # block reward + tx
 
 
 if __name__ == '__main__':

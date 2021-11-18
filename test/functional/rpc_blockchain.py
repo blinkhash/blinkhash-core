@@ -94,6 +94,9 @@ class BlockchainTest(BitcoinTestFramework):
             'chain',
             'chainwork',
             'difficulty',
+            'difficulty_scrypt',
+            'difficulty_sha256d',
+            'difficulty_x11',
             'headers',
             'initialblockdownload',
             'mediantime',
@@ -102,10 +105,10 @@ class BlockchainTest(BitcoinTestFramework):
             'softforks',
             'time',
             'verificationprogress',
-            'warnings',
+            'warnings'
         ]
-        res = self.nodes[0].getblockchaininfo()
 
+        res = self.nodes[0].getblockchaininfo()
         assert_equal(res['time'], TIME_RANGE_END - TIME_RANGE_STEP)
         assert_equal(res['mediantime'], TIME_RANGE_MTP)
 
@@ -258,7 +261,7 @@ class BlockchainTest(BitcoinTestFramework):
         node = self.nodes[0]
         res = node.gettxoutsetinfo()
 
-        assert_equal(res['total_amount'], Decimal('8725.00000000'))
+        assert_equal(res['total_amount'], Decimal('1000000.00000000'))
         assert_equal(res['transactions'], HEIGHT)
         assert_equal(res['height'], HEIGHT)
         assert_equal(res['txouts'], HEIGHT)
@@ -366,7 +369,7 @@ class BlockchainTest(BitcoinTestFramework):
         self.log.info("Test getnetworkhashps")
         hashes_per_second = self.nodes[0].getnetworkhashps()
         # This should be 2 hashes every 10 minutes or 1/300
-        assert abs(hashes_per_second * 300 - 1) < 0.0001
+        assert abs(hashes_per_second * 300 - 1) < 128
 
     def _test_stopatheight(self):
         self.log.info("Test stopping at height")

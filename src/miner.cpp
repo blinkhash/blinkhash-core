@@ -14,6 +14,8 @@
 #include <consensus/tx_verify.h>
 #include <consensus/validation.h>
 #include <deploymentstatus.h>
+#include <hash.h>
+#include <net.h>
 #include <policy/feerate.h>
 #include <policy/policy.h>
 #include <pow.h>
@@ -21,6 +23,7 @@
 #include <timedata.h>
 #include <util/moneystr.h>
 #include <util/system.h>
+#include <validationinterface.h>
 
 #include <algorithm>
 #include <utility>
@@ -28,14 +31,15 @@
 int64_t UpdateTime(CBlockHeader* pblock, const Consensus::Params& consensusParams, const CBlockIndex* pindexPrev)
 {
     int64_t nOldTime = pblock->nTime;
-    int64_t nNewTime = std::max(pindexPrev->GetMedianTimePast()+1, GetAdjustedTime());
+    int64_t nNewTime = std::max(pindexPrev->GetMedianTimePast() + 1, GetAdjustedTime());
 
     if (nOldTime < nNewTime)
         pblock->nTime = nNewTime;
 
     // Updating time can change work required on testnet:
-    if (consensusParams.fPowAllowMinDifficultyBlocks)
-        pblock->nBits = GetNextWorkRequired(pindexPrev, pblock, consensusParams);
+    if (consensusParams.fPowAllowMinDifficultyBlocks) {
+        pblock->nBits = GetNextWorkRequired(pindexPrev, pblock, consensusParams, pblock->GetAlgo());
+    }
 
     return nNewTime - nOldTime;
 }
@@ -99,7 +103,7 @@ void BlockAssembler::resetBlock()
     nFees = 0;
 }
 
-std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(const CScript& scriptPubKeyIn)
+std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(const CScript& scriptPubKeyIn, int algo)
 {
     int64_t nTimeStart = GetTimeMicros();
 
@@ -121,11 +125,19 @@ std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(const CScript& sc
     assert(pindexPrev != nullptr);
     nHeight = pindexPrev->nHeight + 1;
 
-    pblock->nVersion = g_versionbitscache.ComputeBlockVersion(pindexPrev, chainparams.GetConsensus());
+    const int32_t nChainId = chainparams.GetConsensus ().nAuxpowChainId;
+    const int32_t nVersion = 4;
+    pblock->SetBaseVersion(nVersion, nChainId);
+    // FIXME: Active version bits after the always-auxpow fork!
+    //pblock->nVersion = g_versionbitscache.ComputeBlockVersion(pindexPrev, chainparams.GetConsensus());
+
+    // multi-algo: encode algo into nVersion
+    pblock->SetAlgo(algo);
+
     // -regtest only: allow overriding block.nVersion with
     // -blockversion=N to test forking scenarios
     if (chainparams.MineBlocksOnDemand())
-        pblock->nVersion = gArgs.GetIntArg("-blockversion", pblock->nVersion);
+        pblock->SetBaseVersion(gArgs.GetArg("-blockversion", pblock->GetBaseVersion()), nChainId);
 
     pblock->nTime = GetAdjustedTime();
     const int64_t nMedianTimePast = pindexPrev->GetMedianTimePast();
@@ -171,8 +183,8 @@ std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(const CScript& sc
     // Fill in header
     pblock->hashPrevBlock  = pindexPrev->GetBlockHash();
     UpdateTime(pblock, chainparams.GetConsensus(), pindexPrev);
-    pblock->nBits          = GetNextWorkRequired(pindexPrev, pblock, chainparams.GetConsensus());
-    pblock->nNonce         = 0;
+    pblock->nBits = GetNextWorkRequired(pindexPrev, pblock, chainparams.GetConsensus(), algo);
+    pblock->nNonce = 0;
     pblocktemplate->vTxSigOpsCost[0] = WITNESS_SCALE_FACTOR * GetLegacySigOpCount(*pblock->vtx[0]);
 
     BlockValidationState state;
@@ -445,7 +457,7 @@ void IncrementExtraNonce(CBlock* pblock, const CBlockIndex* pindexPrev, unsigned
         hashPrevBlock = pblock->hashPrevBlock;
     }
     ++nExtraNonce;
-    unsigned int nHeight = pindexPrev->nHeight+1; // Height first in coinbase required for block.version=2
+    unsigned int nHeight = pindexPrev->nHeight + 1; // Height first in coinbase required for block.version=2
     CMutableTransaction txCoinbase(*pblock->vtx[0]);
     txCoinbase.vin[0].scriptSig = (CScript() << nHeight << CScriptNum(nExtraNonce));
     assert(txCoinbase.vin[0].scriptSig.size() <= 100);

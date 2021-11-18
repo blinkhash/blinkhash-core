@@ -24,6 +24,16 @@ EXPECTED_CIRCULAR_DEPENDENCIES=(
     "wallet/fees -> wallet/wallet -> wallet/fees"
     "wallet/wallet -> wallet/walletdb -> wallet/wallet"
     "node/coinstats -> validation -> node/coinstats"
+
+    # Circular dependencies from auxpow.
+    "auxpow -> primitives/block -> auxpow"
+    "chain -> validation -> chain"
+    "chain -> validation -> validationinterface -> chain"
+    "chain -> validation -> consensus/tx_verify -> chain"
+    "chain -> validation -> pow -> chain"
+    "chain -> validation -> txdb -> chain"
+    "chain -> validation -> versionbits -> chain"
+    "rpc/blockchain -> rpc/rawtransaction -> rpc/blockchain"
 )
 
 EXIT_CODE=0

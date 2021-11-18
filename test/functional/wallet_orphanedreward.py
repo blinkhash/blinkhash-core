@@ -30,7 +30,7 @@ class OrphanedBlockRewardTest(BitcoinTestFramework):
         # Let the block reward mature and send coins including both
         # the existing balance and the block reward.
         self.generate(self.nodes[0], 150)
-        assert_equal(self.nodes[1].getbalance(), 10 + 25)
+        assert_equal(self.nodes[1].getbalance(), 10 + 5000)
         txid = self.nodes[1].sendtoaddress(self.nodes[0].getnewaddress(), 30)
 
         # Orphan the block reward and make sure that the original coins
@@ -40,7 +40,7 @@ class OrphanedBlockRewardTest(BitcoinTestFramework):
         # Without the following abandontransaction call, the coins are
         # not considered available yet.
         assert_equal(self.nodes[1].getbalances()["mine"], {
-          "trusted": 0,
+          "trusted": 10,
           "untrusted_pending": 0,
           "immature": 0,
         })

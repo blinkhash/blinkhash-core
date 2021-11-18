@@ -82,6 +82,9 @@ const int64_t nStartupTime = GetTime();
 const char * const BITCOIN_CONF_FILENAME = "bitcoin.conf";
 const char * const BITCOIN_SETTINGS_FILENAME = "settings.json";
 
+// Blinkhash algorithm
+int miningAlgorithm = 0;
+
 ArgsManager gArgs;
 
 /** Mutex to protect dir_locks. */

@@ -109,6 +109,7 @@ BITCOIN_CORE_H = \
   addrman.h \
   addrman_impl.h \
   attributes.h \
+  auxpow.h \
   banman.h \
   base58.h \
   bech32.h \
@@ -197,11 +198,13 @@ BITCOIN_CORE_H = \
   random.h \
   randomenv.h \
   reverse_iterator.h \
+  rpc/auxpow_miner.h \
   rpc/blockchain.h \
   rpc/client.h \
   rpc/mining.h \
   rpc/net.h \
   rpc/protocol.h \
+  rpc/rawtransaction.h \
   rpc/rawtransaction_util.h \
   rpc/register.h \
   rpc/request.h \
@@ -353,6 +356,7 @@ libbitcoin_server_a_SOURCES = \
   policy/settings.cpp \
   pow.cpp \
   rest.cpp \
+  rpc/auxpow_miner.cpp \
   rpc/blockchain.cpp \
   rpc/mining.cpp \
   rpc/misc.cpp \
@@ -505,6 +509,8 @@ libbitcoin_consensus_a_SOURCES = \
   prevector.h \
   primitives/block.cpp \
   primitives/block.h \
+  primitives/pureheader.cpp \
+  primitives/pureheader.h \
   primitives/transaction.cpp \
   primitives/transaction.h \
   pubkey.cpp \
@@ -523,12 +529,43 @@ libbitcoin_consensus_a_SOURCES = \
   uint256.h \
   util/strencodings.cpp \
   util/strencodings.h \
-  version.h
+  version.h \
+	crypto/scrypt/scrypt.cpp \
+	crypto/scrypt/scrypt_sse2.cpp \
+	crypto/scrypt/sha256.cpp \
+	crypto/scrypt/sha256.h \
+	crypto/scrypt/hash_scrypt.h \
+	crypto/x11/aes_helper.c \
+	crypto/x11/blake.c \
+	crypto/x11/bmw.c \
+	crypto/x11/cubehash.c \
+	crypto/x11/echo.c \
+	crypto/x11/groestl.c \
+	crypto/x11/jh.c \
+	crypto/x11/keccak.c \
+	crypto/x11/luffa.c \
+	crypto/x11/shavite.c \
+	crypto/x11/simd.c \
+	crypto/x11/skein.c \
+	crypto/x11/sph_blake.h \
+	crypto/x11/sph_bmw.h \
+	crypto/x11/sph_cubehash.h \
+	crypto/x11/sph_echo.h \
+	crypto/x11/sph_groestl.h \
+	crypto/x11/sph_jh.h \
+	crypto/x11/sph_keccak.h \
+	crypto/x11/sph_luffa.h \
+	crypto/x11/sph_shavite.h \
+	crypto/x11/sph_simd.h \
+	crypto/x11/sph_skein.h \
+	crypto/x11/sph_types.h \
+	crypto/x11/hash_x11.h
 
 # common: shared between bitcoind, and bitcoin-qt and non-server tools
 libbitcoin_common_a_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
 libbitcoin_common_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
 libbitcoin_common_a_SOURCES = \
+  auxpow.cpp \
   base58.cpp \
   bech32.cpp \
   chainparams.cpp \
@@ -637,6 +674,7 @@ bitcoin_daemon_sources += bitcoind-res.rc
 endif
 
 bitcoin_bin_ldadd = \
+  $(LIBBITCOIN_SERVER) \
   $(LIBBITCOIN_WALLET) \
   $(LIBBITCOIN_COMMON) \
   $(LIBBITCOIN_UTIL) \
@@ -709,18 +747,7 @@ bitcoin_wallet_SOURCES += init/bitcoin-wallet.cpp
 bitcoin_wallet_CPPFLAGS = $(bitcoin_bin_cppflags)
 bitcoin_wallet_CXXFLAGS = $(bitcoin_bin_cxxflags)
 bitcoin_wallet_LDFLAGS = $(bitcoin_bin_ldflags)
-bitcoin_wallet_LDADD = \
-  $(LIBBITCOIN_WALLET_TOOL) \
-  $(LIBBITCOIN_WALLET) \
-  $(LIBBITCOIN_COMMON) \
-  $(LIBBITCOIN_UTIL) \
-  $(LIBUNIVALUE) \
-  $(LIBBITCOIN_CONSENSUS) \
-  $(LIBBITCOIN_CRYPTO) \
-  $(LIBSECP256K1) \
-  $(BOOST_LIBS) \
-  $(BDB_LIBS) \
-  $(SQLITE_LIBS)
+bitcoin_wallet_LDADD = $(LIBBITCOIN_WALLET_TOOL) $(bitcoin_bin_ldadd)
 
 if TARGET_WINDOWS
 bitcoin_wallet_SOURCES += bitcoin-wallet-res.rc

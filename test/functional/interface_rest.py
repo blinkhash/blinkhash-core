@@ -20,6 +20,7 @@ from test_framework.util import (
     assert_greater_than_or_equal,
 )
 
+from test_framework.auxpow_testing import mineAuxpowBlock
 from test_framework.messages import BLOCK_HEADER_SIZE
 
 class ReqType(Enum):
@@ -83,7 +84,7 @@ class RESTTest (BitcoinTestFramework):
         self.generate(self.nodes[0], 1)
         self.generatetoaddress(self.nodes[1], 100, not_related_address)
 
-        assert_equal(self.nodes[0].getbalance(), 50)
+        assert_equal(self.nodes[0].getbalance(), 5000)
 
         txid = self.nodes[0].sendtoaddress(self.nodes[1].getnewaddress(), 0.1)
         self.sync_all()
@@ -199,8 +200,7 @@ class RESTTest (BitcoinTestFramework):
         long_uri = '/'.join([f'{txid}-{n_}' for n_ in range(15)])
         self.test_rest_request(f"/getutxos/checkmempool/{long_uri}", http_method='POST', status=200)
 
-        self.generate(self.nodes[0], 1)  # generate block to not affect upcoming tests
-
+        mineAuxpowBlock(self.nodes[0])  # generate block to not affect upcoming tests
         self.log.info("Test the /block, /blockhashbyheight and /headers URIs")
         bb_hash = self.nodes[0].getbestblockhash()
 
@@ -221,9 +221,10 @@ class RESTTest (BitcoinTestFramework):
 
         # Compare with block header
         response_header = self.test_rest_request(f"/headers/1/{bb_hash}", req_type=ReqType.BIN, ret_type=RetType.OBJ)
-        assert_equal(int(response_header.getheader('content-length')), BLOCK_HEADER_SIZE)
+        header_len = int(response_header.getheader('content-length'))
+        assert_greater_than(header_len, BLOCK_HEADER_SIZE)
         response_header_bytes = response_header.read()
-        assert_equal(response_bytes[:BLOCK_HEADER_SIZE], response_header_bytes)
+        assert_equal(response_bytes[:header_len], response_header_bytes)
 
         # Check block hex format
         response_hex = self.test_rest_request(f"/block/{bb_hash}", req_type=ReqType.HEX, ret_type=RetType.OBJ)

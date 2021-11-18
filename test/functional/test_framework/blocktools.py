@@ -65,7 +65,12 @@ def create_block(hashprev=None, coinbase=None, ntime=None, *, version=None, tmpl
     block = CBlock()
     if tmpl is None:
         tmpl = {}
-    block.nVersion = version or tmpl.get('version') or VERSIONBITS_LAST_OLD_BLOCK_VERSION
+    if version:
+        block.set_base_version(version)
+    elif tmpl.get('version'):
+        block.nVersion = tmpl.get('version')
+    else:
+        block.set_base_version(4)
     block.nTime = ntime or tmpl.get('curtime') or int(time.time() + 600)
     block.hashPrevBlock = hashprev or int(tmpl['previousblockhash'], 0x10)
     if tmpl and not tmpl.get('bits') is None:
@@ -117,7 +122,7 @@ def script_BIP34_coinbase_height(height):
     return CScript([CScriptNum(height)])
 
 
-def create_coinbase(height, pubkey=None, extra_output_script=None, fees=0, nValue=50):
+def create_coinbase(height, pubkey=None, extra_output_script=None, fees=0, nValue=5000):
     """Create a coinbase transaction.
 
     If pubkey is passed in, the coinbase output will be a P2PK output;

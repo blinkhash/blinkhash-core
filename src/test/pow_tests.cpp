@@ -64,7 +64,7 @@ BOOST_AUTO_TEST_CASE(CheckProofOfWork_test_negative_target)
     const auto consensus = CreateChainParams(*m_node.args, CBaseChainParams::MAIN)->GetConsensus();
     uint256 hash;
     unsigned int nBits;
-    nBits = UintToArith256(consensus.powLimit).GetCompact(true);
+    nBits = UintToArith256(consensus.fPowLimit).GetCompact(true);
     hash.SetHex("0x1");
     BOOST_CHECK(!CheckProofOfWork(hash, nBits, consensus));
 }
@@ -83,7 +83,7 @@ BOOST_AUTO_TEST_CASE(CheckProofOfWork_test_too_easy_target)
     const auto consensus = CreateChainParams(*m_node.args, CBaseChainParams::MAIN)->GetConsensus();
     uint256 hash;
     unsigned int nBits;
-    arith_uint256 nBits_arith = UintToArith256(consensus.powLimit);
+    arith_uint256 nBits_arith = UintToArith256(consensus.fPowLimit);
     nBits_arith *= 2;
     nBits = nBits_arith.GetCompact();
     hash.SetHex("0x1");
@@ -95,7 +95,7 @@ BOOST_AUTO_TEST_CASE(CheckProofOfWork_test_biger_hash_than_target)
     const auto consensus = CreateChainParams(*m_node.args, CBaseChainParams::MAIN)->GetConsensus();
     uint256 hash;
     unsigned int nBits;
-    arith_uint256 hash_arith = UintToArith256(consensus.powLimit);
+    arith_uint256 hash_arith = UintToArith256(consensus.fPowLimit);
     nBits = hash_arith.GetCompact();
     hash_arith *= 2; // hash > nBits
     hash = ArithToUint256(hash_arith);
@@ -120,7 +120,7 @@ BOOST_AUTO_TEST_CASE(GetBlockProofEquivalentTime_test)
     for (int i = 0; i < 10000; i++) {
         blocks[i].pprev = i ? &blocks[i - 1] : nullptr;
         blocks[i].nHeight = i;
-        blocks[i].nTime = 1269211443 + i * chainParams->GetConsensus().nPowTargetSpacing;
+        blocks[i].nTime = 1269211443 + i * chainParams->GetConsensus().nMultiAlgoTargetSpacing;
         blocks[i].nBits = 0x207fffff; /* target 0x7fffff000... */
         blocks[i].nChainWork = i ? blocks[i - 1].nChainWork + GetBlockProof(blocks[i - 1]) : arith_uint256(0);
     }
@@ -144,21 +144,21 @@ void sanity_check_chainparams(const ArgsManager& args, std::string chainName)
     BOOST_CHECK_EQUAL(consensus.hashGenesisBlock, chainParams->GenesisBlock().GetHash());
 
     // target timespan is an even multiple of spacing
-    BOOST_CHECK_EQUAL(consensus.nPowTargetTimespan % consensus.nPowTargetSpacing, 0);
+    BOOST_CHECK_EQUAL(consensus.nPowTargetTimespan % consensus.nMultiAlgoTargetSpacing, 0);
 
-    // genesis nBits is positive, doesn't overflow and is lower than powLimit
+    // genesis nBits is positive, doesn't overflow and is lower than fPowLimit
     arith_uint256 pow_compact;
     bool neg, over;
     pow_compact.SetCompact(chainParams->GenesisBlock().nBits, &neg, &over);
     BOOST_CHECK(!neg && pow_compact != 0);
     BOOST_CHECK(!over);
-    BOOST_CHECK(UintToArith256(consensus.powLimit) >= pow_compact);
+    BOOST_CHECK(UintToArith256(consensus.fPowLimit) >= pow_compact);
 
     // check max target * 4*nPowTargetTimespan doesn't overflow -- see pow.cpp:CalculateNextWorkRequired()
     if (!consensus.fPowNoRetargeting) {
         arith_uint256 targ_max("0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF");
         targ_max /= consensus.nPowTargetTimespan*4;
-        BOOST_CHECK(UintToArith256(consensus.powLimit) < targ_max);
+        BOOST_CHECK(UintToArith256(consensus.fPowLimit) < targ_max);
     }
 }
 

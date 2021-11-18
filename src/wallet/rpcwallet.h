@@ -38,4 +38,5 @@ const LegacyScriptPubKeyMan& EnsureConstLegacyScriptPubKeyMan(const CWallet& wal
 
 RPCHelpMan getaddressinfo();
 RPCHelpMan signrawtransactionwithwallet();
+
 #endif // BITCOIN_WALLET_RPCWALLET_H

@@ -5,7 +5,7 @@
 """Test processing of unrequested blocks.
 
 Setup: two nodes, node0 + node1, not connected to each other. Node1 will have
-nMinimumChainWork set to 0x10, so it won't process low-work unrequested blocks.
+nMinimumChainWork set to 0x1000, so it won't process low-work unrequested blocks.
 
 We have one P2PInterface connection to node0 called test_node, and one to node1
 called min_work_node.
@@ -67,7 +67,7 @@ class AcceptBlockTest(BitcoinTestFramework):
     def set_test_params(self):
         self.setup_clean_chain = True
         self.num_nodes = 2
-        self.extra_args = [[], ["-minimumchainwork=0x10"]]
+        self.extra_args = [[], ["-minimumchainwork=0x1000"]]
 
     def setup_network(self):
         self.setup_nodes()

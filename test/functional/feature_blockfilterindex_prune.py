@@ -31,7 +31,11 @@ class FeatureBlockfilterindexPruneTest(BitcoinTestFramework):
 
         self.log.info("prune some blocks")
         pruneheight = self.nodes[0].pruneblockchain(400)
-        assert_equal(pruneheight, 248)
+        # In upstream Bitcoin, the prune height is 248.  For auxpow it is
+        # different (but that doesn't affect this test) since pruning is done
+        # on total block files, and auxpow blocks have a different size (so
+        # that a different number of blocks fits into a whole file).
+        assert_equal(pruneheight, 337)
 
         self.log.info("check if we can access the tips blockfilter when we have pruned some blocks")
         assert_greater_than(len(self.nodes[0].getblockfilter(self.nodes[0].getbestblockhash())['filter']), 0)

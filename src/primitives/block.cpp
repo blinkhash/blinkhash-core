@@ -7,10 +7,20 @@
 
 #include <hash.h>
 #include <tinyformat.h>
+#include <util/strencodings.h>
+#include <crypto/common.h>
 
-uint256 CBlockHeader::GetHash() const
+void CBlockHeader::SetAuxpow (std::unique_ptr<CAuxPow> apow)
 {
-    return SerializeHash(*this);
+    if (apow != nullptr)
+    {
+        auxpow.reset(apow.release());
+        SetAuxpowVersion(true);
+    } else
+    {
+        auxpow.reset();
+        SetAuxpowVersion(false);
+    }
 }
 
 std::string CBlock::ToString() const
@@ -19,6 +29,8 @@ std::string CBlock::ToString() const
     s << strprintf("CBlock(hash=%s, ver=0x%08x, hashPrevBlock=%s, hashMerkleRoot=%s, nTime=%u, nBits=%08x, nNonce=%u, vtx=%u)\n",
         GetHash().ToString(),
         nVersion,
+        GetAlgo(),
+        GetPoWHash(GetAlgo()).ToString(),
         hashPrevBlock.ToString(),
         hashMerkleRoot.ToString(),
         nTime, nBits, nNonce,

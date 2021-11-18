@@ -10,6 +10,7 @@
 #include <consensus/params.h>
 #include <flatfile.h>
 #include <primitives/block.h>
+#include <primitives/pureheader.h>
 #include <tinyformat.h>
 #include <uint256.h>
 
@@ -211,7 +212,7 @@ public:
     {
     }
 
-    explicit CBlockIndex(const CBlockHeader& block)
+    explicit CBlockIndex(const CPureBlockHeader& block)
         : nVersion{block.nVersion},
           hashMerkleRoot{block.hashMerkleRoot},
           nTime{block.nTime},
@@ -238,22 +239,23 @@ public:
         return ret;
     }
 
-    CBlockHeader GetBlockHeader() const
-    {
-        CBlockHeader block;
-        block.nVersion       = nVersion;
-        if (pprev)
-            block.hashPrevBlock = pprev->GetBlockHash();
-        block.hashMerkleRoot = hashMerkleRoot;
-        block.nTime          = nTime;
-        block.nBits          = nBits;
-        block.nNonce         = nNonce;
-        return block;
-    }
+    CBlockHeader GetBlockHeader(const Consensus::Params& consensusParams) const;
 
     uint256 GetBlockHash() const
     {
         return *phashBlock;
+    }
+
+    uint256 GetBlockPoWHash(const Consensus::Params& consensusParams) const
+    {
+        CBlockHeader block = GetBlockHeader(consensusParams);
+        int algo = block.GetAlgo();
+        return block.GetPoWHash(algo);
+    }
+
+    int GetAlgo() const
+    {
+        return ::GetAlgo(nVersion);
     }
 
     /**
@@ -338,6 +340,12 @@ public:
     //! Efficiently find an ancestor of this block.
     CBlockIndex* GetAncestor(int height);
     const CBlockIndex* GetAncestor(int height) const;
+
+    /* Analyse the block version.  */
+    inline int GetBaseVersion() const
+    {
+        return CPureBlockHeader::GetBaseVersion(nVersion);
+    }
 };
 
 arith_uint256 GetBlockProof(const CBlockIndex& block);
@@ -345,7 +353,12 @@ arith_uint256 GetBlockProof(const CBlockIndex& block);
 int64_t GetBlockProofEquivalentTime(const CBlockIndex& to, const CBlockIndex& from, const CBlockIndex& tip, const Consensus::Params&);
 /** Find the forking point between two chain tips. */
 const CBlockIndex* LastCommonAncestor(const CBlockIndex* pa, const CBlockIndex* pb);
-
+/** Return the index to the last block of algo */
+const CBlockIndex* GetLastBlockIndexForAlgo(const CBlockIndex* pindex, int algo);
+/** Return name of algorithm depending on algo-id, */
+std::string GetAlgoName(int algo);
+/** Return algo-id of algorithm depending on name */
+int GetAlgoByName(std::string strAlgo, int fallback);
 
 /** Used to marshal pointers into hashes for db storage. */
 class CDiskBlockIndex : public CBlockIndex
@@ -384,7 +397,7 @@ public:
 
     uint256 GetBlockHash() const
     {
-        CBlockHeader block;
+        CPureBlockHeader block;
         block.nVersion        = nVersion;
         block.hashPrevBlock   = hashPrev;
         block.hashMerkleRoot  = hashMerkleRoot;

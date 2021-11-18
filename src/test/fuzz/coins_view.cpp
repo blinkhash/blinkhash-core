@@ -29,12 +29,6 @@
 namespace {
 const TestingSetup* g_setup;
 const Coin EMPTY_COIN{};
-
-bool operator==(const Coin& a, const Coin& b)
-{
-    if (a.IsSpent() && b.IsSpent()) return true;
-    return a.fCoinBase == b.fCoinBase && a.nHeight == b.nHeight && a.out == b.out;
-}
 } // namespace
 
 void initialize_coins_view()

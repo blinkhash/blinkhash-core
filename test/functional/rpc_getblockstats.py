@@ -43,7 +43,8 @@ class GetblockstatsTest(BitcoinTestFramework):
     def generate_test_data(self, filename):
         mocktime = 1525107225
         self.nodes[0].setmocktime(mocktime)
-        self.generate(self.nodes[0], COINBASE_MATURITY + 1)
+        self.nodes[0].createwallet(wallet_name="testwallet")
+        self.nodes[0].generatetoaddress(COINBASE_MATURITY + 1, self.nodes[0].getnewaddress())
 
         address = self.nodes[0].get_deterministic_priv_key().address
         self.nodes[0].sendtoaddress(address=address, amount=10, subtractfeefromamount=True)

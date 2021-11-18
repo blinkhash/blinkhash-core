@@ -20,7 +20,9 @@ from test_framework.blocktools import (
 from test_framework.messages import (
     CBlock,
     CBlockHeader,
+    CHAIN_ID,
     BLOCK_HEADER_SIZE,
+    VERSION_CHAIN_START,
     ser_uint256,
 )
 from test_framework.p2p import P2PDataStore
@@ -65,12 +67,12 @@ class MiningTest(BitcoinTestFramework):
         assert_equal(mining_info['currentblockweight'], 4000)
 
         self.log.info('test blockversion')
-        self.restart_node(0, extra_args=[f'-mocktime={t}', '-blockversion=1337'])
+        self.restart_node(0, extra_args=[f'-mocktime={t}', '-blockversion=133'])
         self.connect_nodes(0, 1)
-        assert_equal(1337, self.nodes[0].getblocktemplate(NORMAL_GBT_REQUEST_PARAMS)['version'])
+        assert_equal(133, self.nodes[0].getblocktemplate(NORMAL_GBT_REQUEST_PARAMS)['version'])
         self.restart_node(0, extra_args=[f'-mocktime={t}'])
         self.connect_nodes(0, 1)
-        assert_equal(VERSIONBITS_TOP_BITS + (1 << VERSIONBITS_DEPLOYMENT_TESTDUMMY_BIT), self.nodes[0].getblocktemplate(NORMAL_GBT_REQUEST_PARAMS)['version'])
+        assert_equal(CHAIN_ID, self.nodes[0].getblocktemplate(NORMAL_GBT_REQUEST_PARAMS)['version'] // VERSION_CHAIN_START)
         self.restart_node(0)
         self.connect_nodes(0, 1)
 
@@ -91,7 +93,7 @@ class MiningTest(BitcoinTestFramework):
         assert 'currentblocktx' not in mining_info
         assert 'currentblockweight' not in mining_info
         assert_equal(mining_info['difficulty'], Decimal('4.656542373906925E-10'))
-        assert_equal(mining_info['networkhashps'], Decimal('0.003333333333333334'))
+        assert_equal(mining_info['networkhashps'], Decimal('0.4266666666666667'))
         assert_equal(mining_info['pooledtx'], 0)
 
         self.log.info("getblocktemplate: Test default witness commitment")
