@@ -4,7 +4,7 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #if defined(HAVE_CONFIG_H)
-#include <config/bitcoin-config.h>
+#include <config/blinkhash-config.h>
 #endif
 
 #include <init.h>
@@ -109,11 +109,11 @@ static const char* DEFAULT_ASMAP_FILENAME="ip_asn.map";
 /**
  * The PID file facilities.
  */
-static const char* BITCOIN_PID_FILENAME = "bitcoind.pid";
+static const char* BLINKHASH_PID_FILENAME = "blinkhashd.pid";
 
 static fs::path GetPidFile(const ArgsManager& args)
 {
-    return AbsPathForConfigVal(fs::PathFromString(args.GetArg("-pid", BITCOIN_PID_FILENAME)));
+    return AbsPathForConfigVal(fs::PathFromString(args.GetArg("-pid", BLINKHASH_PID_FILENAME)));
 }
 
 [[nodiscard]] static bool CreatePidFile(const ArgsManager& args)
@@ -384,7 +384,7 @@ void SetupServerArgs(ArgsManager& argsman)
     argsman.AddArg("-blockreconstructionextratxn=<n>", strprintf("Extra transactions to keep in memory for compact block reconstructions (default: %u)", DEFAULT_BLOCK_RECONSTRUCTION_EXTRA_TXN), ArgsManager::ALLOW_ANY, OptionsCategory::OPTIONS);
     argsman.AddArg("-blocksonly", strprintf("Whether to reject transactions from network peers. Automatic broadcast and rebroadcast of any transactions from inbound peers is disabled, unless the peer has the 'forcerelay' permission. RPC transactions are not affected. (default: %u)", DEFAULT_BLOCKSONLY), ArgsManager::ALLOW_ANY, OptionsCategory::OPTIONS);
     argsman.AddArg("-coinstatsindex", strprintf("Maintain coinstats index used by the gettxoutsetinfo RPC (default: %u)", DEFAULT_COINSTATSINDEX), ArgsManager::ALLOW_ANY, OptionsCategory::OPTIONS);
-    argsman.AddArg("-conf=<file>", strprintf("Specify path to read-only configuration file. Relative paths will be prefixed by datadir location. (default: %s)", BITCOIN_CONF_FILENAME), ArgsManager::ALLOW_ANY, OptionsCategory::OPTIONS);
+    argsman.AddArg("-conf=<file>", strprintf("Specify path to read-only configuration file. Relative paths will be prefixed by datadir location. (default: %s)", BLINKHASH_CONF_FILENAME), ArgsManager::ALLOW_ANY, OptionsCategory::OPTIONS);
     argsman.AddArg("-datadir=<dir>", "Specify data directory", ArgsManager::ALLOW_ANY, OptionsCategory::OPTIONS);
     argsman.AddArg("-dbbatchsize", strprintf("Maximum database write batch size in bytes (default: %u)", nDefaultDbBatchSize), ArgsManager::ALLOW_ANY | ArgsManager::DEBUG_ONLY, OptionsCategory::OPTIONS);
     argsman.AddArg("-dbcache=<n>", strprintf("Maximum database cache size <n> MiB (%d to %d, default: %d). In addition, unused mempool memory is shared for this cache (see -maxmempool).", nMinDbCache, nMaxDbCache, nDefaultDbCache), ArgsManager::ALLOW_ANY, OptionsCategory::OPTIONS);
@@ -397,13 +397,13 @@ void SetupServerArgs(ArgsManager& argsman)
     argsman.AddArg("-par=<n>", strprintf("Set the number of script verification threads (%u to %d, 0 = auto, <0 = leave that many cores free, default: %d)",
         -GetNumCores(), MAX_SCRIPTCHECK_THREADS, DEFAULT_SCRIPTCHECK_THREADS), ArgsManager::ALLOW_ANY, OptionsCategory::OPTIONS);
     argsman.AddArg("-persistmempool", strprintf("Whether to save the mempool on shutdown and load on restart (default: %u)", DEFAULT_PERSIST_MEMPOOL), ArgsManager::ALLOW_ANY, OptionsCategory::OPTIONS);
-    argsman.AddArg("-pid=<file>", strprintf("Specify pid file. Relative paths will be prefixed by a net-specific datadir location. (default: %s)", BITCOIN_PID_FILENAME), ArgsManager::ALLOW_ANY, OptionsCategory::OPTIONS);
+    argsman.AddArg("-pid=<file>", strprintf("Specify pid file. Relative paths will be prefixed by a net-specific datadir location. (default: %s)", BLINKHASH_PID_FILENAME), ArgsManager::ALLOW_ANY, OptionsCategory::OPTIONS);
     argsman.AddArg("-prune=<n>", strprintf("Reduce storage requirements by enabling pruning (deleting) of old blocks. This allows the pruneblockchain RPC to be called to delete specific blocks, and enables automatic pruning of old blocks if a target size in MiB is provided. This mode is incompatible with -txindex and -coinstatsindex. "
             "Warning: Reverting this setting requires re-downloading the entire blockchain. "
             "(default: 0 = disable pruning blocks, 1 = allow manual pruning via RPC, >=%u = automatically prune block files to stay under the specified target size in MiB)", MIN_DISK_SPACE_FOR_BLOCK_FILES / 1024 / 1024), ArgsManager::ALLOW_ANY, OptionsCategory::OPTIONS);
     argsman.AddArg("-reindex", "Rebuild chain state and block index from the blk*.dat files on disk", ArgsManager::ALLOW_ANY, OptionsCategory::OPTIONS);
     argsman.AddArg("-reindex-chainstate", "Rebuild chain state from the currently indexed blocks. When in pruning mode or if blocks on disk might be corrupted, use full -reindex instead.", ArgsManager::ALLOW_ANY, OptionsCategory::OPTIONS);
-    argsman.AddArg("-settings=<file>", strprintf("Specify path to dynamic settings data file. Can be disabled with -nosettings. File is written at runtime and not meant to be edited by users (use %s instead for custom settings). Relative paths will be prefixed by datadir location. (default: %s)", BITCOIN_CONF_FILENAME, BITCOIN_SETTINGS_FILENAME), ArgsManager::ALLOW_ANY, OptionsCategory::OPTIONS);
+    argsman.AddArg("-settings=<file>", strprintf("Specify path to dynamic settings data file. Can be disabled with -nosettings. File is written at runtime and not meant to be edited by users (use %s instead for custom settings). Relative paths will be prefixed by datadir location. (default: %s)", BLINKHASH_CONF_FILENAME, BLINKHASH_SETTINGS_FILENAME), ArgsManager::ALLOW_ANY, OptionsCategory::OPTIONS);
 #if HAVE_SYSTEM
     argsman.AddArg("-startupnotify=<cmd>", "Execute command on startup.", ArgsManager::ALLOW_ANY, OptionsCategory::OPTIONS);
 #endif
@@ -539,6 +539,7 @@ void SetupServerArgs(ArgsManager& argsman)
     argsman.AddArg("-blockmaxweight=<n>", strprintf("Set maximum BIP141 block weight (default: %d)", DEFAULT_BLOCK_MAX_WEIGHT), ArgsManager::ALLOW_ANY, OptionsCategory::BLOCK_CREATION);
     argsman.AddArg("-blockmintxfee=<amt>", strprintf("Set lowest fee rate (in %s/kvB) for transactions to be included in block creation. (default: %s)", CURRENCY_UNIT, FormatMoney(DEFAULT_BLOCK_MIN_TX_FEE)), ArgsManager::ALLOW_ANY, OptionsCategory::BLOCK_CREATION);
     argsman.AddArg("-blockversion=<n>", "Override block version to test forking scenarios", ArgsManager::ALLOW_ANY | ArgsManager::DEBUG_ONLY, OptionsCategory::BLOCK_CREATION);
+    argsman.AddArg("-algo=<algo>", "Mining algorithm: sha256d, scrypt, x11", ArgsManager::ALLOW_ANY, OptionsCategory::BLOCK_CREATION);
 
     argsman.AddArg("-rest", strprintf("Accept public REST requests (default: %u)", DEFAULT_REST_ENABLE), ArgsManager::ALLOW_ANY, OptionsCategory::RPC);
     argsman.AddArg("-rpcallowip=<ip>", "Allow JSON-RPC connections from specified source. Valid for <ip> are a single IP (e.g. 1.2.3.4), a network/netmask (e.g. 1.2.3.4/255.255.255.0) or a network/CIDR (e.g. 1.2.3.4/24). This option can be specified multiple times", ArgsManager::ALLOW_ANY, OptionsCategory::RPC);
@@ -565,7 +566,7 @@ void SetupServerArgs(ArgsManager& argsman)
 #endif
 
 #if defined(USE_SYSCALL_SANDBOX)
-    argsman.AddArg("-sandbox=<mode>", "Use the experimental syscall sandbox in the specified mode (-sandbox=log-and-abort or -sandbox=abort). Allow only expected syscalls to be used by bitcoind. Note that this is an experimental new feature that may cause bitcoind to exit or crash unexpectedly: use with caution. In the \"log-and-abort\" mode the invocation of an unexpected syscall results in a debug handler being invoked which will log the incident and terminate the program (without executing the unexpected syscall). In the \"abort\" mode the invocation of an unexpected syscall results in the entire process being killed immediately by the kernel without executing the unexpected syscall.", ArgsManager::ALLOW_ANY, OptionsCategory::OPTIONS);
+    argsman.AddArg("-sandbox=<mode>", "Use the experimental syscall sandbox in the specified mode (-sandbox=log-and-abort or -sandbox=abort). Allow only expected syscalls to be used by blinkhashd. Note that this is an experimental new feature that may cause blinkhashd to exit or crash unexpectedly: use with caution. In the \"log-and-abort\" mode the invocation of an unexpected syscall results in a debug handler being invoked which will log the incident and terminate the program (without executing the unexpected syscall). In the \"abort\" mode the invocation of an unexpected syscall results in the entire process being killed immediately by the kernel without executing the unexpected syscall.", ArgsManager::ALLOW_ANY, OptionsCategory::OPTIONS);
 #endif // USE_SYSCALL_SANDBOX
 
     // Add the hidden options
@@ -574,7 +575,7 @@ void SetupServerArgs(ArgsManager& argsman)
 
 std::string LicenseInfo()
 {
-    const std::string URL_SOURCE_CODE = "<https://github.com/bitcoin/bitcoin-core>";
+    const std::string URL_SOURCE_CODE = "<https://github.com/blinkhash/blinkhash-core>";
 
     return CopyrightHolders(strprintf(_("Copyright (C) %i-%i").translated, 2009, COPYRIGHT_YEAR) + " ") + "\n" +
            "\n" +
@@ -1024,7 +1025,7 @@ bool AppInitParameterInteraction(const ArgsManager& args)
         return InitError(_("No proxy server specified. Use -proxy=<ip> or -proxy=<ip:port>."));
     }
 
-    std::string strAlgorithm = gArgs.GetArg("-algo", "sha256d");
+    std::string strAlgorithm = args.GetArg("-algo", "sha256d");
     miningAlgorithm = GetAlgoByName(strAlgorithm, ALGO_SHA256D);
 
     #if defined(USE_SYSCALL_SANDBOX)
@@ -1054,7 +1055,7 @@ bool AppInitParameterInteraction(const ArgsManager& args)
             if (!SetupSyscallSandbox(log_syscall_violation_before_terminating)) {
                 return InitError(Untranslated("Installation of the syscall sandbox failed."));
             }
-            LogPrintf("Experimental syscall sandbox enabled (-sandbox=%s): bitcoind will terminate if an unexpected (not allowlisted) syscall is invoked.\n", sandbox_arg);
+            LogPrintf("Experimental syscall sandbox enabled (-sandbox=%s): blinkhashd will terminate if an unexpected (not allowlisted) syscall is invoked.\n", sandbox_arg);
         }
     #endif // USE_SYSCALL_SANDBOX
 
@@ -1063,7 +1064,7 @@ bool AppInitParameterInteraction(const ArgsManager& args)
 
 static bool LockDataDirectory(bool probeOnly)
 {
-    // Make sure only a single Bitcoin process is using the data directory.
+    // Make sure only a single Blinkhash process is using the data directory.
     fs::path datadir = gArgs.GetDataDirNet();
     if (!DirIsWritable(datadir)) {
         return InitError(strprintf(_("Cannot write to data directory '%s'; check permissions."), fs::PathToString(datadir)));
@@ -1127,9 +1128,9 @@ bool AppInitMain(NodeContext& node, interfaces::BlockAndHeaderTipInfo* tip_info)
     // Warn about relative -datadir path.
     if (args.IsArgSet("-datadir") && !fs::PathFromString(args.GetArg("-datadir", "")).is_absolute()) {
         LogPrintf("Warning: relative datadir option '%s' specified, which will be interpreted relative to the " /* Continued */
-                  "current working directory '%s'. This is fragile, because if bitcoin is started in the future "
+                  "current working directory '%s'. This is fragile, because if blinkhash is started in the future "
                   "from a different location, it will be unable to locate the current data files. There could "
-                  "also be data loss if bitcoin is started while in a temporary directory.\n",
+                  "also be data loss if blinkhash is started while in a temporary directory.\n",
                   args.GetArg("-datadir", ""), fs::PathToString(fs::current_path()));
     }
 

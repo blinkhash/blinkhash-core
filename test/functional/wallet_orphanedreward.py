@@ -4,10 +4,10 @@
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 """Test orphaned block rewards in the wallet."""
 
-from test_framework.test_framework import BitcoinTestFramework
+from test_framework.test_framework import BlinkhashTestFramework
 from test_framework.util import assert_equal
 
-class OrphanedBlockRewardTest(BitcoinTestFramework):
+class OrphanedBlockRewardTest(BlinkhashTestFramework):
     def set_test_params(self):
         self.setup_clean_chain = True
         self.num_nodes = 2

@@ -2,8 +2,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef BITCOIN_TEST_UTIL_SETUP_COMMON_H
-#define BITCOIN_TEST_UTIL_SETUP_COMMON_H
+#ifndef BLINKHASH_TEST_UTIL_SETUP_COMMON_H
+#define BLINKHASH_TEST_UTIL_SETUP_COMMON_H
 
 #include <chainparamsbase.h>
 #include <fs.h>
@@ -235,4 +235,4 @@ std::vector<uint256> BlockMerkleBranch(const CBlock& block, uint32_t position);
 // Define == for coin equality (used by multiple tests).
 bool operator==(const Coin &a, const Coin &b);
 
-#endif // BITCOIN_TEST_UTIL_SETUP_COMMON_H
+#endif // BLINKHASH_TEST_UTIL_SETUP_COMMON_H

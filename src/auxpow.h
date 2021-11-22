@@ -1,11 +1,11 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
-// Copyright (c) 2009-2014 The Bitcoin developers
+// Copyright (c) 2009-2014 The Blinkhash developers
 // Copyright (c) 2014-2021 Daniel Kraft
 // Distributed under the MIT/X11 software license, see the accompanying
 // file license.txt or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef BITCOIN_AUXPOW_H
-#define BITCOIN_AUXPOW_H
+#ifndef BLINKHASH_AUXPOW_H
+#define BLINKHASH_AUXPOW_H
 
 #include <consensus/params.h>
 #include <primitives/pureheader.h>
@@ -39,7 +39,7 @@ static const unsigned char pchMergedMiningHeader[] = {
 
 /**
  * Data for the merge-mining auxpow.  This uses a merkle tx (the parent block's
- * coinbase tx) and a second merkle branch to link the actual Bitcoin block
+ * coinbase tx) and a second merkle branch to link the actual Blinkhash block
  * header to the parent block header, which is mined to satisfy the PoW.
  */
 class CAuxPow
@@ -175,4 +175,4 @@ public:
     static CPureBlockHeader& initAuxPow (CBlockHeader& header);
 };
 
-#endif // BITCOIN_AUXPOW_H
+#endif // BLINKHASH_AUXPOW_H

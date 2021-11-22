@@ -6,14 +6,14 @@
 """
 
 from test_framework.blocktools import COINBASE_MATURITY
-from test_framework.test_framework import BitcoinTestFramework
+from test_framework.test_framework import BlinkhashTestFramework
 from test_framework.util import (
     assert_equal,
     assert_raises_rpc_error
 )
 
 
-class CreateWalletWatchonlyTest(BitcoinTestFramework):
+class CreateWalletWatchonlyTest(BlinkhashTestFramework):
     def set_test_params(self):
         self.num_nodes = 1
 
@@ -36,10 +36,10 @@ class CreateWalletWatchonlyTest(BitcoinTestFramework):
         wo_wallet.importpubkey(pubkey=def_wallet.getaddressinfo(wo_addr)['pubkey'])
         wo_wallet.importpubkey(pubkey=def_wallet.getaddressinfo(wo_change)['pubkey'])
 
-        # generate some btc for testing
+        # generate some blkh for testing
         self.generatetoaddress(node, COINBASE_MATURITY + 1, a1)
 
-        # send 1 btc to our watch-only address
+        # send 1 blkh to our watch-only address
         txid = def_wallet.sendtoaddress(wo_addr, 1)
         self.generate(self.nodes[0], 1)
 

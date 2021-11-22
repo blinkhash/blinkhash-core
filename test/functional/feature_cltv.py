@@ -23,7 +23,7 @@ from test_framework.script import (
     OP_CHECKLOCKTIMEVERIFY,
     OP_DROP,
 )
-from test_framework.test_framework import BitcoinTestFramework
+from test_framework.test_framework import BlinkhashTestFramework
 from test_framework.util import assert_equal
 from test_framework.wallet import (
     MiniWallet,
@@ -78,7 +78,7 @@ def cltv_validate(tx, height):
 CLTV_HEIGHT = 111
 
 
-class BIP65Test(BitcoinTestFramework):
+class BIP65Test(BlinkhashTestFramework):
     def set_test_params(self):
         self.num_nodes = 1
         self.extra_args = [[

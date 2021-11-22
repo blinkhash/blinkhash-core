@@ -8,11 +8,11 @@ Test re-org scenarios with a mempool that contains transactions
 that spend (directly or indirectly) coinbase transactions.
 """
 
-from test_framework.test_framework import BitcoinTestFramework
+from test_framework.test_framework import BlinkhashTestFramework
 from test_framework.util import assert_equal, assert_raises_rpc_error
 from test_framework.wallet import MiniWallet
 
-class MempoolCoinbaseTest(BitcoinTestFramework):
+class MempoolCoinbaseTest(BlinkhashTestFramework):
     def set_test_params(self):
         self.num_nodes = 2
         self.extra_args = [

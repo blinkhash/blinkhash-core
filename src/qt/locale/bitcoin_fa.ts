@@ -66,7 +66,7 @@
         <translation>آدرس‌های گیرنده</translation>
     </message>
     <message>
-        <source>These are your Bitcoin addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
+        <source>These are your Blinkhash addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
         <translation>اینها آدرس‌های شما برای ارسال وجوه هستند. همیشه قبل از ارسال، مقدار و آدرس گیرنده را بررسی کنید.</translation>
     </message>
     <message>
@@ -164,7 +164,7 @@
         <translation>تایید رمزگذاری کیف پول</translation>
     </message>
     <message>
-        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR BITCOINS&lt;/b&gt;!</source>
+        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR COINS&lt;/b&gt;!</source>
         <translation>اخطار: اگر کیف‌پول خود را رمزگذاری کرده و رمز خود را فراموش کنید، شما &lt;b&gt;تمام بیت‌کوین‌های خود را از دست خواهید داد&lt;/b&gt;!</translation>
     </message>
     <message>
@@ -184,7 +184,7 @@
         <translation>رمز عبور قدیمی و رمز عبور جدید کیف پول خود را وارد کنید.</translation>
     </message>
     <message>
-        <source>Remember that encrypting your wallet cannot fully protect your bitcoins from being stolen by malware infecting your computer.</source>
+        <source>Remember that encrypting your wallet cannot fully protect your blinkhashs from being stolen by malware infecting your computer.</source>
         <translation>والت رمز بندی شد . 
 یاد داشته باشید که پنجره رمز شده نمی تواند کلا از سرقت نرم افزارهای مخرب محافظ کند</translation>
     </message>
@@ -249,7 +249,7 @@
     </message>
 </context>
 <context>
-    <name>BitcoinGUI</name>
+    <name>BlinkhashGUI</name>
     <message>
         <source>Sign &amp;message...</source>
         <translation>ثبت &amp;پیام</translation>
@@ -359,7 +359,7 @@
         <translation>پراکسی &lt;br&gt;فعال شده است: %1&lt;/br&gt;</translation>
     </message>
     <message>
-        <source>Send coins to a Bitcoin address</source>
+        <source>Send coins to a Blinkhash address</source>
         <translation>ارسال کوین به آدرس بیت کوین</translation>
     </message>
     <message>
@@ -395,11 +395,11 @@
         <translation>رمزنگاری کلیدهای شخصی متعلق به کیف‌پول</translation>
     </message>
     <message>
-        <source>Sign messages with your Bitcoin addresses to prove you own them</source>
+        <source>Sign messages with your Blinkhash addresses to prove you own them</source>
         <translation>پیام‌ها را با آدرس بیت‌کوین خود امضا کنید تا مالکیت آن‌ها را اثبات کنید</translation>
     </message>
     <message>
-        <source>Verify messages to ensure they were signed with specified Bitcoin addresses</source>
+        <source>Verify messages to ensure they were signed with specified Blinkhash addresses</source>
         <translation>پیام‌ها را تائید کنید تا از امضاشدن آن‌ها با آدرس بیت‌کوین مطمئن شوید</translation>
     </message>
     <message>
@@ -419,7 +419,7 @@
         <translation>نوار ابزار</translation>
     </message>
     <message>
-        <source>Request payments (generates QR codes and bitcoin: URIs)</source>
+        <source>Request payments (generates QR codes and blinkhash: URIs)</source>
         <translation>درخواست پرداخت (ساخت کد QR و بیت‌کوین: URIs)</translation>
     </message>
     <message>
@@ -435,7 +435,7 @@
         <translation>گزینه های خط فرمان</translation>
     </message>
     <message numerus="yes">
-        <source>%n active connection(s) to Bitcoin network</source>
+        <source>%n active connection(s) to Blinkhash network</source>
         <translation><numerusform>%n ارتباط فعال به شبکه بیت‌کوین</numerusform><numerusform>%n ارتباط فعال به شبکه بیت‌کوین</numerusform></translation>
     </message>
     <message>
@@ -495,7 +495,7 @@
         <translation>ادرس درسافت</translation>
     </message>
     <message>
-        <source>Open a bitcoin: URI</source>
+        <source>Open a blinkhash: URI</source>
         <translation>بارک کردن یک بیت‌کوین: URI</translation>
     </message>
     <message>
@@ -871,7 +871,7 @@
         <translation>ویرایش آدرس ارسالی</translation>
     </message>
     <message>
-        <source>The entered address "%1" is not a valid Bitcoin address.</source>
+        <source>The entered address "%1" is not a valid Blinkhash address.</source>
         <translation>آدرس وارد شده "%1" آدرس معتبر بیت کوین نیست.</translation>
     </message>
     <message>
@@ -948,7 +948,7 @@
         <translation>استفاده کردن از پوشه داده مخصوص:</translation>
     </message>
     <message>
-        <source>Bitcoin</source>
+        <source>Blinkhash</source>
         <translation>بیت کوین</translation>
     </message>
     <message>
@@ -1105,7 +1105,7 @@
         <translation>فعال کردن قابلیت سکه و کنترل</translation>
     </message>
     <message>
-        <source>Automatically open the Bitcoin client port on the router. This only works when your router supports UPnP and it is enabled.</source>
+        <source>Automatically open the Blinkhash client port on the router. This only works when your router supports UPnP and it is enabled.</source>
         <translation>باز کردن خودکار درگاه شبکهٔ بیت‌کوین روی روترها. تنها زمانی کار می‌کند که روتر از پروتکل UPnP پشتیبانی کند و این پروتکل فعال باشد.</translation>
     </message>
     <message>
@@ -1240,8 +1240,8 @@
         <translation>فرم</translation>
     </message>
     <message>
-        <source>The displayed information may be out of date. Your wallet automatically synchronizes with the Bitcoin network after a connection is established, but this process has not completed yet.</source>
-        <translation>اطلاعات نمایش داده شده ممکن است روزآمد نباشد. wallet شما به صورت خودکار بعد از برقراری اتصال با شبکه bitcoin به روز می شود اما این فرایند هنوز تکمیل نشده است.</translation>
+        <source>The displayed information may be out of date. Your wallet automatically synchronizes with the Blinkhash network after a connection is established, but this process has not completed yet.</source>
+        <translation>اطلاعات نمایش داده شده ممکن است روزآمد نباشد. wallet شما به صورت خودکار بعد از برقراری اتصال با شبکه blinkhash به روز می شود اما این فرایند هنوز تکمیل نشده است.</translation>
     </message>
     <message>
         <source>Watch-only:</source>
@@ -1358,7 +1358,7 @@
         <translation>درخواست پرداخت با خطا مواجه شد</translation>
     </message>
     <message>
-        <source>Cannot start bitcoin: click-to-pay handler</source>
+        <source>Cannot start blinkhash: click-to-pay handler</source>
         <translation>نمی‌توان بیت‌کوین را اجرا کرد: کنترل‌کنندهٔ کلیک-و-پرداخت</translation>
     </message>
     <message>
@@ -1408,7 +1408,7 @@
         <translation>میزان</translation>
     </message>
     <message>
-        <source>Enter a Bitcoin address (e.g. %1)</source>
+        <source>Enter a Blinkhash address (e.g. %1)</source>
         <translation>آدرس بیت کوین را وارد کنید (به طور مثال %1)</translation>
     </message>
     <message>
@@ -2158,7 +2158,7 @@ Note:  Since the fee is calculated on a per-byte basis, a fee of "100 satoshis p
         <translation><numerusform>تایید شدن تخمین زده شده تراکنش برابر است با: %n بلاک.</numerusform><numerusform>تایید شدن تخمین زده شده تراکنش برابر است با: %n بلاک.</numerusform></translation>
     </message>
     <message>
-        <source>Warning: Invalid Bitcoin address</source>
+        <source>Warning: Invalid Blinkhash address</source>
         <translation>هشدار: آدرس بیت کوین نامعتبر</translation>
     </message>
     <message>
@@ -2197,7 +2197,7 @@ Note:  Since the fee is calculated on a per-byte basis, a fee of "100 satoshis p
         <translation>انتخاب آدرس قبلا استفاده شده</translation>
     </message>
     <message>
-        <source>The Bitcoin address to send the payment to</source>
+        <source>The Blinkhash address to send the payment to</source>
         <translation>آدرس بیت کوین برای ارسال پرداحت به آن</translation>
     </message>
     <message>
@@ -2255,7 +2255,7 @@ Note:  Since the fee is calculated on a per-byte basis, a fee of "100 satoshis p
         <translation>&amp;ثبت پیام</translation>
     </message>
     <message>
-        <source>The Bitcoin address to sign the message with</source>
+        <source>The Blinkhash address to sign the message with</source>
         <translation>نشانی بیت‌کوین برای امضاء پیغام با آن</translation>
     </message>
     <message>
@@ -2287,7 +2287,7 @@ Note:  Since the fee is calculated on a per-byte basis, a fee of "100 satoshis p
         <translation>امضای فعلی را به حافظهٔ سیستم کپی کن</translation>
     </message>
     <message>
-        <source>Sign the message to prove you own this Bitcoin address</source>
+        <source>Sign the message to prove you own this Blinkhash address</source>
         <translation>پیام را امضا کنید تا ثابت کنید این آدرس بیت‌کوین متعلق به شماست</translation>
     </message>
     <message>
@@ -2307,11 +2307,11 @@ Note:  Since the fee is calculated on a per-byte basis, a fee of "100 satoshis p
         <translation>تایید پیام</translation>
     </message>
     <message>
-        <source>The Bitcoin address the message was signed with</source>
+        <source>The Blinkhash address the message was signed with</source>
         <translation>نشانی بیت‌کوین که پیغام با آن امضاء شده</translation>
     </message>
     <message>
-        <source>Verify the message to ensure it was signed with the specified Bitcoin address</source>
+        <source>Verify the message to ensure it was signed with the specified Blinkhash address</source>
         <translation>پیام را تایید کنید تا مطمئن شوید که توسط آدرس بیت‌کوین مشخص شده امضا شده است.</translation>
     </message>
     <message>
@@ -2859,7 +2859,7 @@ Note:  Since the fee is calculated on a per-byte basis, a fee of "100 satoshis p
     </message>
 </context>
 <context>
-    <name>bitcoin-core</name>
+    <name>blinkhash-core</name>
     <message>
         <source>The %s developers</source>
         <translation>%s توسعه دهندگان</translation>

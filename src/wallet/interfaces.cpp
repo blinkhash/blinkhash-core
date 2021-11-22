@@ -518,7 +518,7 @@ public:
     {
         for (const CRPCCommand& command : GetWalletRPCCommands()) {
             m_rpc_commands.emplace_back(command.category, command.name, [this, &command](const JSONRPCRequest& request, UniValue& result, bool last_handler) {
-                /* Unlike upstream Bitcoin, we need the NodeContext for
+                /* Unlike upstream Blinkhash, we need the NodeContext for
                    getauxblock.  Thus we construct a new context that
                    contains both and use that.  */
                 auto node_context = util::AnyPtr<NodeContext>(request.context);

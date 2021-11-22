@@ -2,8 +2,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef BITCOIN_SCRIPT_KEYORIGIN_H
-#define BITCOIN_SCRIPT_KEYORIGIN_H
+#ifndef BLINKHASH_SCRIPT_KEYORIGIN_H
+#define BLINKHASH_SCRIPT_KEYORIGIN_H
 
 #include <serialize.h>
 #include <vector>
@@ -27,4 +27,4 @@ struct KeyOriginInfo
     }
 };
 
-#endif // BITCOIN_SCRIPT_KEYORIGIN_H
+#endif // BLINKHASH_SCRIPT_KEYORIGIN_H

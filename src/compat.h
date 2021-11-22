@@ -3,11 +3,11 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef BITCOIN_COMPAT_H
-#define BITCOIN_COMPAT_H
+#ifndef BLINKHASH_COMPAT_H
+#define BLINKHASH_COMPAT_H
 
 #if defined(HAVE_CONFIG_H)
-#include <config/bitcoin-config.h>
+#include <config/blinkhash-config.h>
 #endif
 
 #ifdef WIN32
@@ -115,4 +115,4 @@ bool static inline IsSelectableSocket(const SOCKET& s) {
 #define MSG_DONTWAIT 0
 #endif
 
-#endif // BITCOIN_COMPAT_H
+#endif // BLINKHASH_COMPAT_H

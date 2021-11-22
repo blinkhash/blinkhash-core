@@ -9,31 +9,31 @@
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\src\bitcoind.cpp" />
-    <ClCompile Include="..\..\src\init\bitcoind.cpp">
-      <ObjectFileName>$(IntDir)init_bitcoind.obj</ObjectFileName>
+    <ClCompile Include="..\..\src\blinkhashd.cpp" />
+    <ClCompile Include="..\..\src\init\blinkhashd.cpp">
+      <ObjectFileName>$(IntDir)init_blinkhashd.obj</ObjectFileName>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\libbitcoinconsensus\libbitcoinconsensus.vcxproj">
+    <ProjectReference Include="..\libblinkhashconsensus\libblinkhashconsensus.vcxproj">
       <Project>{2b384fa8-9ee1-4544-93cb-0d733c25e8ce}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\libbitcoin_common\libbitcoin_common.vcxproj">
+    <ProjectReference Include="..\libblinkhash_common\libblinkhash_common.vcxproj">
       <Project>{7c87e378-df58-482e-aa2f-1bc129bc19ce}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\libbitcoin_crypto\libbitcoin_crypto.vcxproj">
+    <ProjectReference Include="..\libblinkhash_crypto\libblinkhash_crypto.vcxproj">
       <Project>{6190199c-6cf4-4dad-bfbd-93fa72a760c1}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\libbitcoin_server\libbitcoin_server.vcxproj">
+    <ProjectReference Include="..\libblinkhash_server\libblinkhash_server.vcxproj">
       <Project>{460fee33-1fe1-483f-b3bf-931ff8e969a5}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\libbitcoin_util\libbitcoin_util.vcxproj">
+    <ProjectReference Include="..\libblinkhash_util\libblinkhash_util.vcxproj">
       <Project>{b53a5535-ee9d-4c6f-9a26-f79ee3bc3754}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\libbitcoin_wallet\libbitcoin_wallet.vcxproj">
+    <ProjectReference Include="..\libblinkhash_wallet\libblinkhash_wallet.vcxproj">
       <Project>{93b86837-b543-48a5-a89b-7c87abb77df2}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\libbitcoin_zmq\libbitcoin_zmq.vcxproj">
+    <ProjectReference Include="..\libblinkhash_zmq\libblinkhash_zmq.vcxproj">
       <Project>{792d487f-f14c-49fc-a9de-3fc150f31c3f}</Project>
     </ProjectReference>
     <ProjectReference Include="..\libunivalue\libunivalue.vcxproj">
@@ -56,7 +56,7 @@
   <Target Name="AfterBuild">
     <Copy SourceFiles="$(ConfigIniIn)" DestinationFiles="$(ConfigIniOut)" ></Copy>
     <ReplaceInFile FilePath="$(ConfigIniOut)"
-                   Replace="@PACKAGE_NAME@" By="Bitcoin Core"></ReplaceInFile>
+                   Replace="@PACKAGE_NAME@" By="Blinkhash Core"></ReplaceInFile>
     <ReplaceInFile FilePath="$(ConfigIniOut)"
                    Replace="@PACKAGE_BUGREPORT@" By="https://github.com/bitcoin/bitcoin/issues"></ReplaceInFile>
     <ReplaceInFile FilePath="$(ConfigIniOut)"
@@ -72,11 +72,11 @@
     <ReplaceInFile FilePath="$(ConfigIniOut)"
                   Replace="@USE_SQLITE_TRUE@" By=""></ReplaceInFile>
     <ReplaceInFile FilePath="$(ConfigIniOut)"
-                  Replace="@BUILD_BITCOIN_CLI_TRUE@" By=""></ReplaceInFile>
+                  Replace="@BUILD_BLINKHASH_CLI_TRUE@" By=""></ReplaceInFile>
     <ReplaceInFile FilePath="$(ConfigIniOut)"
-                  Replace="@BUILD_BITCOIN_WALLET_TRUE@" By=""></ReplaceInFile>
+                  Replace="@BUILD_BLINKHASH_WALLET_TRUE@" By=""></ReplaceInFile>
     <ReplaceInFile FilePath="$(ConfigIniOut)"
-                  Replace="@BUILD_BITCOIND_TRUE@" By=""></ReplaceInFile>
+                  Replace="@BUILD_BLINKHASHD_TRUE@" By=""></ReplaceInFile>
     <ReplaceInFile FilePath="$(ConfigIniOut)"
                   Replace="@ENABLE_FUZZ_TRUE@" By=""></ReplaceInFile>
     <ReplaceInFile FilePath="$(ConfigIniOut)"

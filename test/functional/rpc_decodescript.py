@@ -8,13 +8,13 @@ from test_framework.messages import (
     sha256,
     tx_from_hex,
 )
-from test_framework.test_framework import BitcoinTestFramework
+from test_framework.test_framework import BlinkhashTestFramework
 from test_framework.util import (
     assert_equal,
 )
 
 
-class DecodeScriptTest(BitcoinTestFramework):
+class DecodeScriptTest(BlinkhashTestFramework):
     def set_test_params(self):
         self.setup_clean_chain = True
         self.num_nodes = 1

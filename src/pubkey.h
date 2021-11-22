@@ -4,8 +4,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef BITCOIN_PUBKEY_H
-#define BITCOIN_PUBKEY_H
+#ifndef BLINKHASH_PUBKEY_H
+#define BLINKHASH_PUBKEY_H
 
 #include <hash.h>
 #include <serialize.h>
@@ -327,4 +327,4 @@ typedef struct secp256k1_context_struct secp256k1_context;
  *  by key.cpp. */
 const secp256k1_context* GetVerifyContext();
 
-#endif // BITCOIN_PUBKEY_H
+#endif // BLINKHASH_PUBKEY_H

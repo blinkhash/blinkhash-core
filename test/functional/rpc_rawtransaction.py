@@ -20,7 +20,7 @@ from test_framework.messages import (
     CTransaction,
     tx_from_hex,
 )
-from test_framework.test_framework import BitcoinTestFramework
+from test_framework.test_framework import BlinkhashTestFramework
 from test_framework.util import (
     assert_equal,
     assert_raises_rpc_error,
@@ -49,7 +49,7 @@ class multidict(dict):
         return self.x
 
 
-class RawTransactionsTest(BitcoinTestFramework):
+class RawTransactionsTest(BlinkhashTestFramework):
     def set_test_params(self):
         self.setup_clean_chain = True
         self.num_nodes = 4
@@ -211,7 +211,7 @@ class RawTransactionsTest(BitcoinTestFramework):
         self.nodes[0].createrawtransaction(inputs=[], outputs={})  # Should not throw for backwards compatibility
         self.nodes[0].createrawtransaction(inputs=[], outputs=[])
         assert_raises_rpc_error(-8, "Data must be hexadecimal string", self.nodes[0].createrawtransaction, [], {'data': 'foo'})
-        assert_raises_rpc_error(-5, "Invalid Bitcoin address", self.nodes[0].createrawtransaction, [], {'foo': 0})
+        assert_raises_rpc_error(-5, "Invalid Blinkhash address", self.nodes[0].createrawtransaction, [], {'foo': 0})
         assert_raises_rpc_error(-3, "Invalid amount", self.nodes[0].createrawtransaction, [], {address: 'foo'})
         assert_raises_rpc_error(-3, "Amount out of range", self.nodes[0].createrawtransaction, [], {address: -1})
         assert_raises_rpc_error(-8, "Invalid parameter, duplicated address: %s" % address, self.nodes[0].createrawtransaction, [], multidict([(address, 1), (address, 1)]))
@@ -320,12 +320,12 @@ class RawTransactionsTest(BitcoinTestFramework):
 
         self.sync_all()
         inputs = [{"txid": txId, "vout": vout['n']}]
-        # Fee 10,000 satoshis, (1 - (10000 sat * 0.00000001 BTC/sat)) = 0.9999
+        # Fee 10,000 satoshis, (1 - (10000 sat * 0.00000001 BLKH/sat)) = 0.9999
         outputs = {self.nodes[0].getnewaddress(): Decimal("0.99990000")}
         rawTx = self.nodes[2].createrawtransaction(inputs, outputs)
         rawTxSigned = self.nodes[2].signrawtransactionwithwallet(rawTx)
         assert_equal(rawTxSigned['complete'], True)
-        # Fee 10,000 satoshis, ~100 b transaction, fee rate should land around 100 sat/byte = 0.00100000 BTC/kB
+        # Fee 10,000 satoshis, ~100 b transaction, fee rate should land around 100 sat/byte = 0.00100000 BLKH/kB
         # Thus, testmempoolaccept should reject
         testres = self.nodes[2].testmempoolaccept([rawTxSigned['hex']], 0.00001000)[0]
         assert_equal(testres['allowed'], False)
@@ -344,12 +344,12 @@ class RawTransactionsTest(BitcoinTestFramework):
 
         self.sync_all()
         inputs = [{"txid": txId, "vout": vout['n']}]
-        # Fee 2,000,000 satoshis, (1 - (2000000 sat * 0.00000001 BTC/sat)) = 0.98
+        # Fee 2,000,000 satoshis, (1 - (2000000 sat * 0.00000001 BLKH/sat)) = 0.98
         outputs = {self.nodes[0].getnewaddress() : Decimal("0.98000000")}
         rawTx = self.nodes[2].createrawtransaction(inputs, outputs)
         rawTxSigned = self.nodes[2].signrawtransactionwithwallet(rawTx)
         assert_equal(rawTxSigned['complete'], True)
-        # Fee 2,000,000 satoshis, ~100 b transaction, fee rate should land around 20,000 sat/byte = 0.20000000 BTC/kB
+        # Fee 2,000,000 satoshis, ~100 b transaction, fee rate should land around 20,000 sat/byte = 0.20000000 BLKH/kB
         # Thus, testmempoolaccept should reject
         testres = self.nodes[2].testmempoolaccept([rawTxSigned['hex']])[0]
         assert_equal(testres['allowed'], False)
@@ -432,7 +432,7 @@ class RawTransactionsTest(BitcoinTestFramework):
         # use balance deltas instead of absolute values
         bal = self.nodes[2].getbalance()
 
-        # send 1.2 BTC to msig adr
+        # send 1.2 BLKH to msig adr
         txId = self.nodes[0].sendtoaddress(mSigObj, 1.2)
         self.sync_all()
         self.generate(self.nodes[0], 1)

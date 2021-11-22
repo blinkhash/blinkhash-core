@@ -24,7 +24,7 @@ from test_framework.script import (
 from test_framework.script_util import (
     script_to_p2sh_script,
 )
-from test_framework.test_framework import BitcoinTestFramework
+from test_framework.test_framework import BlinkhashTestFramework
 from test_framework.util import (
     assert_equal,
     assert_greater_than,
@@ -171,7 +171,7 @@ def send_tx(node, utxo, feerate):
     return txid
 
 
-class EstimateFeeTest(BitcoinTestFramework):
+class EstimateFeeTest(BlinkhashTestFramework):
     def set_test_params(self):
         self.num_nodes = 3
         # mine non-standard txs (e.g. txs with "dust" outputs)

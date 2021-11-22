@@ -3,8 +3,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef BITCOIN_WALLET_LOAD_H
-#define BITCOIN_WALLET_LOAD_H
+#ifndef BLINKHASH_WALLET_LOAD_H
+#define BLINKHASH_WALLET_LOAD_H
 
 #include <string>
 #include <vector>
@@ -35,4 +35,4 @@ void StopWallets(WalletContext& context);
 //! Close all wallets.
 void UnloadWallets(WalletContext& context);
 
-#endif // BITCOIN_WALLET_LOAD_H
+#endif // BLINKHASH_WALLET_LOAD_H

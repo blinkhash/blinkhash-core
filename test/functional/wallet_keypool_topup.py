@@ -14,13 +14,13 @@ import os
 import shutil
 
 from test_framework.blocktools import COINBASE_MATURITY
-from test_framework.test_framework import BitcoinTestFramework
+from test_framework.test_framework import BlinkhashTestFramework
 from test_framework.util import (
     assert_equal,
 )
 
 
-class KeypoolRestoreTest(BitcoinTestFramework):
+class KeypoolRestoreTest(BlinkhashTestFramework):
     def set_test_params(self):
         self.setup_clean_chain = True
         self.num_nodes = 4

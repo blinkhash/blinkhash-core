@@ -6,7 +6,7 @@
 # Test the merge-mining RPC interface:
 # getauxblock, createauxblock, submitauxblock
 
-from test_framework.test_framework import BitcoinTestFramework
+from test_framework.test_framework import BlinkhashTestFramework
 from test_framework.util import (
   assert_equal,
   assert_greater_than_or_equal,
@@ -22,7 +22,7 @@ from test_framework.auxpow_testing import (
 
 from decimal import Decimal
 
-class AuxpowMiningTest (BitcoinTestFramework):
+class AuxpowMiningTest (BlinkhashTestFramework):
 
   def set_test_params (self):
     self.num_nodes = 2

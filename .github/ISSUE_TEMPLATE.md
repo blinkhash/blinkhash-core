@@ -1,6 +1,6 @@
-<!-- This issue tracker is only for technical issues related to Bitcoin Core.
+<!-- This issue tracker is only for technical issues related to Blinkhash Core.
 
-General bitcoin questions and/or support requests are best directed to the Bitcoin StackExchange at https://bitcoin.stackexchange.com.
+General blinkhash questions and/or support requests are best directed to the Bitcoin StackExchange at https://bitcoin.stackexchange.com.
 
 For reporting security issues, please read instructions at https://bitcoincore.org/en/contact/.
 
@@ -17,7 +17,7 @@ https://github.com/bitcoin-core/gui/issues/
 
 <!--- How reliably can you reproduce the issue, what are the steps to do so? -->
 
-<!-- What version of Bitcoin Core are you using, where did you get it (website, self-compiled, etc)? -->
+<!-- What version of Blinkhash Core are you using, where did you get it (website, self-compiled, etc)? -->
 
 <!-- What type of machine are you observing the error on (OS/CPU and disk type)? -->
 

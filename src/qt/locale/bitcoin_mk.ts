@@ -64,7 +64,7 @@
     <name>BanTableModel</name>
     </context>
 <context>
-    <name>BitcoinGUI</name>
+    <name>BlinkhashGUI</name>
     <message>
         <source>Sign &amp;message...</source>
         <translation>Потпиши &amp;порака...</translation>
@@ -126,7 +126,7 @@
         <translation>Повторно индексирање на блокови од дискот...</translation>
     </message>
     <message>
-        <source>Send coins to a Bitcoin address</source>
+        <source>Send coins to a Blinkhash address</source>
         <translation>Испрати биткоини на Биткоин адреса</translation>
     </message>
     <message>
@@ -285,7 +285,7 @@
 <context>
     <name>Intro</name>
     <message>
-        <source>Bitcoin</source>
+        <source>Blinkhash</source>
         <translation>Биткоин</translation>
     </message>
     <message>
@@ -602,6 +602,6 @@
     </message>
     </context>
 <context>
-    <name>bitcoin-core</name>
+    <name>blinkhash-core</name>
     </context>
 </TS>

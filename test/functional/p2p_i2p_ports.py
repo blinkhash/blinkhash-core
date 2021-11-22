@@ -8,10 +8,10 @@ Test ports handling for I2P hosts
 
 import re
 
-from test_framework.test_framework import BitcoinTestFramework
+from test_framework.test_framework import BlinkhashTestFramework
 
 
-class I2PPorts(BitcoinTestFramework):
+class I2PPorts(BlinkhashTestFramework):
     def set_test_params(self):
         self.num_nodes = 1
         # The test assumes that an I2P SAM proxy is not listening here.
@@ -21,7 +21,7 @@ class I2PPorts(BitcoinTestFramework):
         node = self.nodes[0]
 
         self.log.info("Ensure we don't try to connect if port!=0")
-        addr = "zsxwyo6qcn3chqzwxnseusqgsnuw3maqnztkiypyfxtya4snkoka.b32.i2p:8333"
+        addr = "zsxwyo6qcn3chqzwxnseusqgsnuw3maqnztkiypyfxtya4snkoka.b32.i2p:9855"
         raised = False
         try:
             with node.assert_debug_log(expected_msgs=[f"Error connecting to {addr}"]):

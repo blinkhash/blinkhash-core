@@ -2,8 +2,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef BITCOIN_NODE_TRANSACTION_H
-#define BITCOIN_NODE_TRANSACTION_H
+#ifndef BLINKHASH_NODE_TRANSACTION_H
+#define BLINKHASH_NODE_TRANSACTION_H
 
 #include <attributes.h>
 #include <policy/feerate.h>
@@ -58,4 +58,4 @@ static const CFeeRate DEFAULT_MAX_RAW_TX_FEE_RATE{COIN / 10};
  */
 CTransactionRef GetTransaction(const CBlockIndex* const block_index, const CTxMemPool* const mempool, const uint256& hash, const Consensus::Params& consensusParams, uint256& hashBlock);
 
-#endif // BITCOIN_NODE_TRANSACTION_H
+#endif // BLINKHASH_NODE_TRANSACTION_H

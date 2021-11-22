@@ -6,7 +6,7 @@
 
 from decimal import Decimal
 
-from test_framework.test_framework import BitcoinTestFramework
+from test_framework.test_framework import BlinkhashTestFramework
 from test_framework.util import assert_equal
 
 # FIXME: With auxpow, these blocks fail the base version checks for e.g. BIP16
@@ -26,7 +26,7 @@ signet_blocks = [
 ]
 
 
-class SignetBasicTest(BitcoinTestFramework):
+class SignetBasicTest(BlinkhashTestFramework):
     def set_test_params(self):
         self.chain = "signet"
         self.num_nodes = 6

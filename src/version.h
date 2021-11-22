@@ -2,8 +2,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef BITCOIN_VERSION_H
-#define BITCOIN_VERSION_H
+#ifndef BLINKHASH_VERSION_H
+#define BLINKHASH_VERSION_H
 
 /**
  * network protocol versioning
@@ -44,4 +44,4 @@ static const int WTXID_RELAY_VERSION = 110016;
 // Make sure that none of the values above collide with
 // `SERIALIZE_TRANSACTION_NO_WITNESS` or `ADDRV2_FORMAT`.
 
-#endif // BITCOIN_VERSION_H
+#endif // BLINKHASH_VERSION_H

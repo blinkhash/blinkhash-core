@@ -7,13 +7,13 @@
 import time
 from decimal import Decimal
 
-from test_framework.test_framework import BitcoinTestFramework
+from test_framework.test_framework import BlinkhashTestFramework
 from test_framework.util import assert_equal, assert_raises_rpc_error
 
 from test_framework.auxpow import reverseHex
 from test_framework.auxpow_testing import computeAuxpow
 
-class KeyPoolTest(BitcoinTestFramework):
+class KeyPoolTest(BlinkhashTestFramework):
     def set_test_params(self):
         self.num_nodes = 1
 

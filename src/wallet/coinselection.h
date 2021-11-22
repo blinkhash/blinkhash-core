@@ -2,8 +2,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef BITCOIN_WALLET_COINSELECTION_H
-#define BITCOIN_WALLET_COINSELECTION_H
+#ifndef BLINKHASH_WALLET_COINSELECTION_H
+#define BLINKHASH_WALLET_COINSELECTION_H
 
 #include <consensus/amount.h>
 #include <policy/feerate.h>
@@ -211,4 +211,4 @@ std::optional<std::pair<std::set<CInputCoin>, CAmount>> SelectCoinsSRD(const std
 // Original coin selection algorithm as a fallback
 bool KnapsackSolver(const CAmount& nTargetValue, std::vector<OutputGroup>& groups, std::set<CInputCoin>& setCoinsRet, CAmount& nValueRet);
 
-#endif // BITCOIN_WALLET_COINSELECTION_H
+#endif // BLINKHASH_WALLET_COINSELECTION_H

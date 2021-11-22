@@ -20,7 +20,7 @@ from test_framework.p2p import (
     p2p_lock,
     P2P_SERVICES,
 )
-from test_framework.test_framework import BitcoinTestFramework
+from test_framework.test_framework import BlinkhashTestFramework
 from test_framework.util import assert_equal, assert_greater_than
 
 
@@ -42,8 +42,8 @@ class AddrReceiver(P2PInterface):
                 # relay_tests checks the content of the addr messages match
                 # expectations based on the message creation in setup_addr_msg
                 assert_equal(addr.nServices, 9)
-                if not 8333 <= addr.port < 8343:
-                    raise AssertionError("Invalid addr.port of {} (8333-8342 expected)".format(addr.port))
+                if not 9855 <= addr.port < 9865:
+                    raise AssertionError("Invalid addr.port of {} (9855-9864 expected)".format(addr.port))
                 assert addr.ip.startswith('123.123.123.')
 
     def on_getaddr(self, message):
@@ -72,7 +72,7 @@ class AddrReceiver(P2PInterface):
         return self.message_count['getaddr'] > 0
 
 
-class AddrTest(BitcoinTestFramework):
+class AddrTest(BlinkhashTestFramework):
     counter = 0
     mocktime = int(time.time())
 
@@ -98,7 +98,7 @@ class AddrTest(BitcoinTestFramework):
             addr.time = self.mocktime + i
             addr.nServices = P2P_SERVICES
             addr.ip = f"123.123.123.{self.counter % 256}"
-            addr.port = 8333 + i
+            addr.port = 9855 + i
             addrs.append(addr)
             self.counter += 1
 
@@ -113,7 +113,7 @@ class AddrTest(BitcoinTestFramework):
             addr.time = self.mocktime + i
             addr.nServices = P2P_SERVICES
             addr.ip = f"{random.randrange(128,169)}.{random.randrange(1,255)}.{random.randrange(1,255)}.{random.randrange(1,255)}"
-            addr.port = 8333
+            addr.port = 9855
             addrs.append(addr)
         msg = msg_addr()
         msg.addrs = addrs
@@ -276,7 +276,7 @@ class AddrTest(BitcoinTestFramework):
             first_octet = i >> 8
             second_octet = i % 256
             a = f"{first_octet}.{second_octet}.1.1"
-            self.nodes[0].addpeeraddress(a, 8333)
+            self.nodes[0].addpeeraddress(a, 9855)
 
         full_outbound_peer.send_and_ping(msg_getaddr())
         block_relay_peer.send_and_ping(msg_getaddr())

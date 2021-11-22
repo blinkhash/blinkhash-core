@@ -3,8 +3,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef BITCOIN_WALLET_WALLET_H
-#define BITCOIN_WALLET_WALLET_H
+#ifndef BLINKHASH_WALLET_WALLET_H
+#define BLINKHASH_WALLET_WALLET_H
 
 #include <consensus/amount.h>
 #include <interfaces/chain.h>
@@ -931,4 +931,4 @@ bool RemoveWalletSetting(interfaces::Chain& chain, const std::string& wallet_nam
 
 bool DummySignInput(const SigningProvider& provider, CTxIn &tx_in, const CTxOut &txout, bool use_max_sig);
 
-#endif // BITCOIN_WALLET_WALLET_H
+#endif // BLINKHASH_WALLET_WALLET_H

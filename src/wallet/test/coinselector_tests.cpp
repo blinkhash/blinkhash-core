@@ -436,11 +436,11 @@ BOOST_AUTO_TEST_CASE(knapsack_solver_test)
         add_coin(coins, *wallet,  3*COIN);
         add_coin(coins, *wallet,  4*COIN); // now we have 5+6+7+8+18+20+30+100+200+300+400 = 1094 cents
         BOOST_CHECK(KnapsackSolver(95 * CENT, KnapsackGroupOutputs(coins, *wallet, filter_confirmed), setCoinsRet, nValueRet));
-        BOOST_CHECK_EQUAL(nValueRet, 1 * COIN);  // we should get 1 BTC in 1 coin
+        BOOST_CHECK_EQUAL(nValueRet, 1 * COIN);  // we should get 1 BLKH in 1 coin
         BOOST_CHECK_EQUAL(setCoinsRet.size(), 1U);
 
         BOOST_CHECK(KnapsackSolver(195 * CENT, KnapsackGroupOutputs(coins, *wallet, filter_confirmed), setCoinsRet, nValueRet));
-        BOOST_CHECK_EQUAL(nValueRet, 2 * COIN);  // we should get 2 BTC in 1 coin
+        BOOST_CHECK_EQUAL(nValueRet, 2 * COIN);  // we should get 2 BLKH in 1 coin
         BOOST_CHECK_EQUAL(setCoinsRet.size(), 1U);
 
         // empty the wallet and start again, now with fractions of a cent, to test small change avoidance

@@ -2,11 +2,11 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef BITCOIN_QT_BITCOIN_H
-#define BITCOIN_QT_BITCOIN_H
+#ifndef BLINKHASH_QT_BLINKHASH_H
+#define BLINKHASH_QT_BLINKHASH_H
 
 #if defined(HAVE_CONFIG_H)
-#include <config/bitcoin-config.h>
+#include <config/blinkhash-config.h>
 #endif
 
 #include <interfaces/node.h>
@@ -18,7 +18,7 @@
 
 #include <QApplication>
 
-class BitcoinGUI;
+class BlinkhashGUI;
 class ClientModel;
 class NetworkStyle;
 class OptionsModel;
@@ -32,13 +32,13 @@ class Init;
 } // namespace interfaces
 
 
-/** Main Bitcoin application object */
-class BitcoinApplication: public QApplication
+/** Main Blinkhash application object */
+class BlinkhashApplication: public QApplication
 {
     Q_OBJECT
 public:
-    explicit BitcoinApplication();
-    ~BitcoinApplication();
+    explicit BlinkhashApplication();
+    ~BlinkhashApplication();
 
 #ifdef ENABLE_WALLET
     /// Create payment server
@@ -65,7 +65,7 @@ public:
     /// Get process return value
     int getReturnValue() const { return returnValue; }
 
-    /// Get window identifier of QMainWindow (BitcoinGUI)
+    /// Get window identifier of QMainWindow (BlinkhashGUI)
     WId getMainWinId() const;
 
     /// Setup platform style
@@ -90,13 +90,13 @@ Q_SIGNALS:
     void requestedInitialize();
     void requestedShutdown();
     void splashFinished();
-    void windowShown(BitcoinGUI* window);
+    void windowShown(BlinkhashGUI* window);
 
 private:
     std::optional<InitExecutor> m_executor;
     OptionsModel *optionsModel;
     ClientModel *clientModel;
-    BitcoinGUI *window;
+    BlinkhashGUI *window;
     QTimer *pollShutdownTimer;
 #ifdef ENABLE_WALLET
     PaymentServer* paymentServer{nullptr};
@@ -113,4 +113,4 @@ private:
 
 int GuiMain(int argc, char* argv[]);
 
-#endif // BITCOIN_QT_BITCOIN_H
+#endif // BLINKHASH_QT_BLINKHASH_H

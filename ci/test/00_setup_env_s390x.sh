@@ -23,4 +23,4 @@ export TEST_RUNNER_ENV="LC_ALL=C"
 export TEST_RUNNER_EXTRA="--exclude rpc_bind,feature_bind_extra"  # Excluded for now, see https://github.com/bitcoin/bitcoin/issues/17765#issuecomment-602068547
 export RUN_FUNCTIONAL_TESTS=true
 export GOAL="install"
-export BITCOIN_CONFIG="--enable-reduce-exports --with-incompatible-bdb"
+export BLINKHASH_CONFIG="--enable-reduce-exports --with-incompatible-bdb"

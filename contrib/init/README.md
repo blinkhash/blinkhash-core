@@ -1,11 +1,11 @@
 Sample configuration files for:
 ```
-systemd: bitcoind.service
-Upstart: bitcoind.conf
-OpenRC:  bitcoind.openrc
-         bitcoind.openrcconf
-CentOS:  bitcoind.init
-macOS:   org.bitcoin.bitcoind.plist
+systemd: blinkhashd.service
+Upstart: blinkhashd.conf
+OpenRC:  blinkhashd.openrc
+         blinkhashd.openrcconf
+CentOS:  blinkhashd.init
+macOS:   org.blinkhash.blinkhashd.plist
 ```
 have been made available to assist packagers in creating node packages here.
 

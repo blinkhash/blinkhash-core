@@ -2,8 +2,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef BITCOIN_NODE_MINISKETCHWRAPPER_H
-#define BITCOIN_NODE_MINISKETCHWRAPPER_H
+#ifndef BLINKHASH_NODE_MINISKETCHWRAPPER_H
+#define BLINKHASH_NODE_MINISKETCHWRAPPER_H
 
 #include <minisketch.h>
 
@@ -15,4 +15,4 @@ Minisketch MakeMinisketch32(size_t capacity);
 /** Wrapper around Minisketch::CreateFP. */
 Minisketch MakeMinisketch32FP(size_t max_elements, uint32_t fpbits);
 
-#endif // BITCOIN_NODE_MINISKETCHWRAPPER_H
+#endif // BLINKHASH_NODE_MINISKETCHWRAPPER_H

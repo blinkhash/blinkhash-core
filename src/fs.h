@@ -2,8 +2,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef BITCOIN_FS_H
-#define BITCOIN_FS_H
+#ifndef BLINKHASH_FS_H
+#define BLINKHASH_FS_H
 
 #include <stdio.h>
 #include <string>
@@ -236,4 +236,4 @@ template<> inline void formatValue(std::ostream&, const char*, const char*, int,
 template<> inline void formatValue(std::ostream&, const char*, const char*, int, const fs::path&) = delete;
 } // namespace tinyformat
 
-#endif // BITCOIN_FS_H
+#endif // BLINKHASH_FS_H

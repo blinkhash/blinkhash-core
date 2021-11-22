@@ -2,8 +2,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef BITCOIN_RPC_BLOCKCHAIN_H
-#define BITCOIN_RPC_BLOCKCHAIN_H
+#ifndef BLINKHASH_RPC_BLOCKCHAIN_H
+#define BLINKHASH_RPC_BLOCKCHAIN_H
 
 #include <consensus/amount.h>
 #include <core_io.h>
@@ -67,4 +67,4 @@ CBlockPolicyEstimator& EnsureAnyFeeEstimator(const std::any& context);
  */
 UniValue CreateUTXOSnapshot(NodeContext& node, CChainState& chainstate, CAutoFile& afile);
 
-#endif // BITCOIN_RPC_BLOCKCHAIN_H
+#endif // BLINKHASH_RPC_BLOCKCHAIN_H

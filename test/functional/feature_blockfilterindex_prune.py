@@ -3,7 +3,7 @@
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 """Test blockfilterindex in conjunction with prune."""
-from test_framework.test_framework import BitcoinTestFramework
+from test_framework.test_framework import BlinkhashTestFramework
 from test_framework.util import (
     assert_equal,
     assert_greater_than,
@@ -11,7 +11,7 @@ from test_framework.util import (
 )
 
 
-class FeatureBlockfilterindexPruneTest(BitcoinTestFramework):
+class FeatureBlockfilterindexPruneTest(BlinkhashTestFramework):
     def set_test_params(self):
         self.num_nodes = 1
         self.extra_args = [["-fastprune", "-prune=1", "-blockfilterindex=1"]]
@@ -31,7 +31,7 @@ class FeatureBlockfilterindexPruneTest(BitcoinTestFramework):
 
         self.log.info("prune some blocks")
         pruneheight = self.nodes[0].pruneblockchain(400)
-        # In upstream Bitcoin, the prune height is 248.  For auxpow it is
+        # In upstream Blinkhash, the prune height is 248.  For auxpow it is
         # different (but that doesn't affect this test) since pruning is done
         # on total block files, and auxpow blocks have a different size (so
         # that a different number of blocks fits into a whole file).

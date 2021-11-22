@@ -42,7 +42,7 @@ static CBlock CreateGenesisBlock(const char* pszTimestamp, const CScript& genesi
  * transaction cannot be spent since it did not originally exist in the
  * database.
  *
- * CBlock(hash=000000000019d6, ver=1, hashPrevBlock=00000000000000, hashMerkleRoot=4a5e1e, nTime=1231006505, nBits=1d00ffff, nNonce=2083236893, vtx=1)
+ * CBlock(hash=000000000019d6, ver=1, hashPrevBlock=00000000000000, hashMerkleRoot=4a5e1e, nTime=1231006505, nBits=1e0ffff0, nNonce=2083236893, vtx=1)
  *   CTransaction(hash=4a5e1e, ver=1, vin.size=1, vout.size=1, nLockTime=0)
  *     CTxIn(COutPoint(000000, -1), coinbase 04ffff001d0104455468652054696d65732030332f4a616e2f32303039204368616e63656c6c6f72206f6e206272696e6b206f66207365636f6e64206261696c6f757420666f722062616e6b73)
  *     CTxOut(nValue=50.00000000, scriptPubKey=0x5F1DF16B2B704C8A578D0B)
@@ -65,12 +65,12 @@ public:
         consensus.signet_blocks = false;
         consensus.signet_challenge.clear();
 
-        consensus.BIP34Height = 227931;
-        consensus.BIP65Height = 388381; // 000000000000000004c2b624ed5d7756c508d90fd0da2c7c679febfa6c4735f0
-        consensus.BIP66Height = 363725; // 00000000000000000379eaa19dce8c9b722d46ae6a57c2f1a988119488b50931
-        consensus.CSVHeight = 419328; // 000000000000000004a1b34462cb8aeebd5799177f7a29cf28f2d1961716b5b5
-        consensus.SegwitHeight = 481824; // 0000000000000000001c8018d9cb3b742ef25114f27563e3fc4a1902167f9893
-        consensus.MinBIP9WarningHeight = 483840; // segwit activation height + miner confirmation window
+        consensus.BIP34Height = 1;
+        consensus.BIP65Height = 1;
+        consensus.BIP66Height = 1;
+        consensus.CSVHeight = 1;
+        consensus.SegwitHeight = 1;
+        consensus.MinBIP9WarningHeight = 0;
 
         consensus.fStrictChainId = true;
         consensus.nAuxpowChainId = 0x07e5;
@@ -84,7 +84,7 @@ public:
         consensus.nMaxAdjustDown = 20; // 20% adjustment down
         consensus.nLocalTargetAdjustment = 4; // target adjustment per algo
 
-        consensus.fPowLimit = uint256S("00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
+        consensus.fPowLimit = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         consensus.fPowAllowMinDifficultyBlocks = false;
         consensus.fPowNoRetargeting = false;
         consensus.nRuleChangeActivationThreshold = 3024; // 90% of 2016
@@ -109,27 +109,27 @@ public:
          * The characters are rarely used upper ASCII, not valid as UTF-8, and produce
          * a large 32-bit integer with any alignment.
          */
-        pchMessageStart[0] = 0xf9;
-        pchMessageStart[1] = 0xbe;
-        pchMessageStart[2] = 0xb4;
-        pchMessageStart[3] = 0xd9;
-        nDefaultPort = 8333;
+        pchMessageStart[0] = 0x42; // B
+        pchMessageStart[1] = 0x4c; // L
+        pchMessageStart[2] = 0x4b; // K
+        pchMessageStart[3] = 0x48; // H
+        nDefaultPort = 9855;
         nPruneAfterHeight = 100000;
         m_assumed_blockchain_size = 10;
         m_assumed_chain_state_size = 1;
 
-        genesis = CreateGenesisBlock(1629461573, 1048937923, 0x1d00ffff, 1, 50 * COIN);
+        genesis = CreateGenesisBlock(1629461573, 577464, 0x1e0ffff0, 1, 50 * COIN);
         consensus.hashGenesisBlock = genesis.GetHash();
-        assert(consensus.hashGenesisBlock == uint256S("0x00000000bffcdb704339d72c0db32fd9649e59f57400bccbfd22e3776c1e946c"));
+        assert(consensus.hashGenesisBlock == uint256S("0x000004b282e4a4d438db00179ebf14c9d38beccd03def51e7a9392ec165e1ed7"));
         assert(genesis.hashMerkleRoot == uint256S("0xb966eddde22d3a8f9457904e4ad96dd83f7cfae9453635d168569ee6980914c5"));
 
-        base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,0);
-        base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,5);
-        base58Prefixes[SECRET_KEY] =     std::vector<unsigned char>(1,128);
+        base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,25);
+        base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,40);
+        base58Prefixes[SECRET_KEY] =     std::vector<unsigned char>(1,156);
         base58Prefixes[EXT_PUBLIC_KEY] = {0x04, 0x88, 0xB2, 0x1E};
         base58Prefixes[EXT_SECRET_KEY] = {0x04, 0x88, 0xAD, 0xE4};
 
-        bech32_hrp = "bc";
+        bech32_hrp = "mb";
         vFixedSeeds = std::vector<uint8_t>(std::begin(chainparams_seed_main), std::end(chainparams_seed_main));
 
         fDefaultConsistencyChecks = false;
@@ -162,12 +162,12 @@ public:
         consensus.signet_blocks = false;
         consensus.signet_challenge.clear();
 
-        consensus.BIP34Height = 21111;
-        consensus.BIP65Height = 581885; // 00000000007f6655f22f98e72ed80d8b06dc761d5da09df0fa1dc4be4f861eb6
-        consensus.BIP66Height = 330776; // 000000002104c8c45e99a8853285a3b592602a3ccde2b832481da85e9e4ba182
-        consensus.CSVHeight = 770112; // 00000000025e930139bac5c6c31a403776da130831ab85be56578f3fa75369bb
-        consensus.SegwitHeight = 834624; // 00000000002b980fcd729daaa248fd9316a5200e9b367f4ff2c42453e84201ca
-        consensus.MinBIP9WarningHeight = 836640; // segwit activation height + miner confirmation window
+        consensus.BIP34Height = 1;
+        consensus.BIP65Height = 1;
+        consensus.BIP66Height = 1;
+        consensus.CSVHeight = 1;
+        consensus.SegwitHeight = 1;
+        consensus.MinBIP9WarningHeight = 0;
 
         consensus.fStrictChainId = true;
         consensus.nAuxpowChainId = 0x07e5;
@@ -181,7 +181,7 @@ public:
         consensus.nMaxAdjustDown = 20; // 20% adjustment down
         consensus.nLocalTargetAdjustment = 4; // target adjustment per algo
 
-        consensus.fPowLimit = uint256S("00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
+        consensus.fPowLimit = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         consensus.fPowAllowMinDifficultyBlocks = true;
         consensus.fPowNoRetargeting = false;
         consensus.nRuleChangeActivationThreshold = 2352; // 70% of 3360
@@ -201,27 +201,27 @@ public:
         consensus.nMinimumChainWork = uint256S("0x00");
         consensus.defaultAssumeValid = uint256S("0x00");
 
-        pchMessageStart[0] = 0x0b;
-        pchMessageStart[1] = 0x11;
-        pchMessageStart[2] = 0x09;
-        pchMessageStart[3] = 0x07;
+        pchMessageStart[0] = 0x54; // T
+        pchMessageStart[1] = 0x42; // B
+        pchMessageStart[2] = 0x4c; // L
+        pchMessageStart[3] = 0x4b; // K
 
-        nDefaultPort = 18333;
+        nDefaultPort = 19855;
         nPruneAfterHeight = 1000;
         m_assumed_blockchain_size = 40;
         m_assumed_chain_state_size = 2;
 
-        genesis = CreateGenesisBlock(1629421984, 1166852644, 0x1d00ffff, 1, 50 * COIN);
+        genesis = CreateGenesisBlock(1629421984, 366502, 0x1e0ffff0, 1, 50 * COIN);
         consensus.hashGenesisBlock = genesis.GetHash();
-        assert(consensus.hashGenesisBlock == uint256S("0x0000000059bc286e8f361d1c962d51acbca7a002f6b180c54aa9b066933d6928"));
+        assert(consensus.hashGenesisBlock == uint256S("0x00000f01f58e767bd8714c01f7d4b468cf17df2854c9619f18a6429afcb850de"));
         assert(genesis.hashMerkleRoot == uint256S("0xb966eddde22d3a8f9457904e4ad96dd83f7cfae9453635d168569ee6980914c5"));
 
         vFixedSeeds.clear();
         vSeeds.clear();
 
-        base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,111);
-        base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,196);
-        base58Prefixes[SECRET_KEY] =     std::vector<unsigned char>(1,239);
+        base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,85);
+        base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,100);
+        base58Prefixes[SECRET_KEY] =     std::vector<unsigned char>(1,189);
         base58Prefixes[EXT_PUBLIC_KEY] = {0x04, 0x35, 0x87, 0xCF};
         base58Prefixes[EXT_SECRET_KEY] = {0x04, 0x35, 0x83, 0x94};
 
@@ -338,7 +338,7 @@ public:
         uint256 hash = h.GetHash();
         memcpy(pchMessageStart, hash.begin(), 4);
 
-        nDefaultPort = 38333;
+        nDefaultPort = 39855;
         nPruneAfterHeight = 1000;
 
         genesis = CreateGenesisBlock(1629421986, 10778787, 0x1e0377ae, 1, 50 * COIN);
@@ -348,13 +348,13 @@ public:
 
         vFixedSeeds.clear();
 
-        base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,111);
-        base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,196);
-        base58Prefixes[SECRET_KEY] =     std::vector<unsigned char>(1,239);
+        base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,85);
+        base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,100);
+        base58Prefixes[SECRET_KEY] =     std::vector<unsigned char>(1,189);
         base58Prefixes[EXT_PUBLIC_KEY] = {0x04, 0x35, 0x87, 0xCF};
         base58Prefixes[EXT_SECRET_KEY] = {0x04, 0x35, 0x83, 0x94};
 
-        bech32_hrp = "tb";
+        bech32_hrp = "sb";
 
         fDefaultConsistencyChecks = false;
         fRequireStandard = true;
@@ -417,7 +417,7 @@ public:
         pchMessageStart[2] = 0xb5;
         pchMessageStart[3] = 0xda;
 
-        nDefaultPort = 18444;
+        nDefaultPort = 29855;
         nPruneAfterHeight = args.GetBoolArg("-fastprune", false) ? 100 : 1000;
         m_assumed_blockchain_size = 0;
         m_assumed_chain_state_size = 0;

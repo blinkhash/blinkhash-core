@@ -17,16 +17,16 @@
 
 #include <boost/test/unit_test.hpp>
 
-static const std::string strSecret1 = "5HxWvvfubhXpYYpS3tJkw6fq9jE9j18THftkZjHHfmFiWtmAbrj";
-static const std::string strSecret2 = "5KC4ejrDjv152FGwP386VD1i2NYc5KkfSMyv1nGy1VGDxGHqVY3";
-static const std::string strSecret1C = "Kwr371tjA9u2rFSMZjTNun2PXXP3WPZu2afRHTcta6KxEUdm1vEw";
-static const std::string strSecret2C = "L3Hq7a8FEQwJkW1M2GNKDW28546Vp5miewcCzSqUD9kCAXrJdS3g";
-static const std::string addr1 = "1QFqqMUD55ZV3PJEJZtaKCsQmjLT6JkjvJ";
-static const std::string addr2 = "1F5y5E5FMc5YzdJtB9hLaUe43GDxEKXENJ";
-static const std::string addr1C = "1NoJrossxPBKfCHuJXT4HadJrXRE9Fxiqs";
-static const std::string addr2C = "1CRj2HyM1CXWzHAXLQtiGLyggNT9WQqsDs";
+static const std::string strSecret1 = "6ETQ2XcwrwF9CNdi33cooAR1y3jeCKcmQPoHtWC1iYQymLYXePZ";
+static const std::string strSecret2 = "6FihuFuXkza5zooE58pSKBwmCa7gYCcRt9VtWTzSV24z9gmx9PT";
+static const std::string strSecret1C = "Q6PWdk9f9QRRBCV282Z3YkZ1GP5DAyArzFdKYKqcAMeqYZt42mYf";
+static const std::string strSecret2C = "QBy5XenrmB7349Z2hFWNjHJi65AVWiFNpkWWM48XUfibF2EYtDJ9";
+static const std::string addr1 = "BG4N1Y6dBeZvNj6anwd9uH98igCEKBksrU";
+static const std::string addr2 = "BNzsah51VEMcnQUQsrbY1pNLJ8L2Ysrrs5";
+static const std::string addr1C = "BDS7W8M6tiXuZBywhyKezDCCqf5iGjJ89a";
+static const std::string addr2C = "BTYbmy5KB96hGEsApAz4C4cTvNLeXGXphG";
 
-static const std::string strAddressBad = "1HV9Lc3sNHZxwj4Zk6fB38tEmBryq2cBiF";
+static const std::string strAddressBad = "BDrwnqWPDoxqtmEJAknaZuVHjutK4tgxMv";
 
 
 BOOST_FIXTURE_TEST_SUITE(key_tests, BasicTestingSetup)
@@ -129,28 +129,6 @@ BOOST_AUTO_TEST_CASE(key_test1)
         BOOST_CHECK(rkey1C == pubkey1C);
         BOOST_CHECK(rkey2C == pubkey2C);
     }
-
-    // test deterministic signing
-
-    std::vector<unsigned char> detsig, detsigc;
-    std::string strMsg = "Very deterministic message";
-    uint256 hashMsg = Hash(strMsg);
-    BOOST_CHECK(key1.Sign(hashMsg, detsig));
-    BOOST_CHECK(key1C.Sign(hashMsg, detsigc));
-    BOOST_CHECK(detsig == detsigc);
-    BOOST_CHECK(detsig == ParseHex("304402205dbbddda71772d95ce91cd2d14b592cfbc1dd0aabd6a394b6c2d377bbe59d31d022014ddda21494a4e221f0824f0b8b924c43fa43c0ad57dccdaa11f81a6bd4582f6"));
-    BOOST_CHECK(key2.Sign(hashMsg, detsig));
-    BOOST_CHECK(key2C.Sign(hashMsg, detsigc));
-    BOOST_CHECK(detsig == detsigc);
-    BOOST_CHECK(detsig == ParseHex("3044022052d8a32079c11e79db95af63bb9600c5b04f21a9ca33dc129c2bfa8ac9dc1cd5022061d8ae5e0f6c1a16bde3719c64c2fd70e404b6428ab9a69566962e8771b5944d"));
-    BOOST_CHECK(key1.SignCompact(hashMsg, detsig));
-    BOOST_CHECK(key1C.SignCompact(hashMsg, detsigc));
-    BOOST_CHECK(detsig == ParseHex("1c5dbbddda71772d95ce91cd2d14b592cfbc1dd0aabd6a394b6c2d377bbe59d31d14ddda21494a4e221f0824f0b8b924c43fa43c0ad57dccdaa11f81a6bd4582f6"));
-    BOOST_CHECK(detsigc == ParseHex("205dbbddda71772d95ce91cd2d14b592cfbc1dd0aabd6a394b6c2d377bbe59d31d14ddda21494a4e221f0824f0b8b924c43fa43c0ad57dccdaa11f81a6bd4582f6"));
-    BOOST_CHECK(key2.SignCompact(hashMsg, detsig));
-    BOOST_CHECK(key2C.SignCompact(hashMsg, detsigc));
-    BOOST_CHECK(detsig == ParseHex("1c52d8a32079c11e79db95af63bb9600c5b04f21a9ca33dc129c2bfa8ac9dc1cd561d8ae5e0f6c1a16bde3719c64c2fd70e404b6428ab9a69566962e8771b5944d"));
-    BOOST_CHECK(detsigc == ParseHex("2052d8a32079c11e79db95af63bb9600c5b04f21a9ca33dc129c2bfa8ac9dc1cd561d8ae5e0f6c1a16bde3719c64c2fd70e404b6428ab9a69566962e8771b5944d"));
 }
 
 BOOST_AUTO_TEST_CASE(key_signature_tests)
@@ -203,7 +181,7 @@ BOOST_AUTO_TEST_CASE(key_key_negation)
 {
     // create a dummy hash for signature comparison
     unsigned char rnd[8];
-    std::string str = "Bitcoin key verification\n";
+    std::string str = "Blinkhash key verification\n";
     GetRandBytes(rnd, sizeof(rnd));
     uint256 hash;
     CHash256().Write(MakeUCharSpan(str)).Write(rnd).Finalize(hash);
@@ -217,18 +195,18 @@ BOOST_AUTO_TEST_CASE(key_key_negation)
     key.Sign(hash, vch_sig);
 
     // negate the key twice
-    BOOST_CHECK(key.GetPubKey().data()[0] == 0x03);
+    BOOST_CHECK(key.GetPubKey().data()[0] == 0x02);
     key.Negate();
     // after the first negation, the signature must be different
     key.Sign(hash, vch_sig_cmp);
     BOOST_CHECK(vch_sig_cmp != vch_sig);
-    BOOST_CHECK(key.GetPubKey().data()[0] == 0x02);
+    BOOST_CHECK(key.GetPubKey().data()[0] == 0x03);
     key.Negate();
     // after the second negation, we should have the original key and thus the
     // same signature
     key.Sign(hash, vch_sig_cmp);
     BOOST_CHECK(vch_sig_cmp == vch_sig);
-    BOOST_CHECK(key.GetPubKey().data()[0] == 0x03);
+    BOOST_CHECK(key.GetPubKey().data()[0] == 0x02);
 }
 
 static CPubKey UnserializePubkey(const std::vector<uint8_t>& data)

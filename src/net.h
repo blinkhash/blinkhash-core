@@ -3,8 +3,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef BITCOIN_NET_H
-#define BITCOIN_NET_H
+#ifndef BLINKHASH_NET_H
+#define BLINKHASH_NET_H
 
 #include <addrman.h>
 #include <chainparams.h>
@@ -55,7 +55,7 @@ static constexpr auto FEELER_INTERVAL = 2min;
 static constexpr auto EXTRA_BLOCK_RELAY_ONLY_PEER_INTERVAL = 5min;
 /**
  * Maximum length of incoming protocol messages (no message over 32 MiB is
- * currently acceptable).  Bitcoin has 4 MiB here, but we need more space
+ * currently acceptable).  Blinkhash has 4 MiB here, but we need more space
  * to allow for 2,000 block headers with auxpow.
  */
 /* FIXME: Once the headers size limit is deployed sufficiently in the network,
@@ -122,7 +122,7 @@ struct CSerializedNetMsg
  *
  * If adding or removing types, please update CONNECTION_TYPE_DOC in
  * src/rpc/net.cpp and src/qt/rpcconsole.cpp, as well as the descriptions in
- * src/qt/guiutil.cpp and src/bitcoin-cli.cpp::NetinfoRequestHandler. */
+ * src/qt/guiutil.cpp and src/blinkhash-cli.cpp::NetinfoRequestHandler. */
 enum class ConnectionType {
     /**
      * Inbound connections are those initiated by a peer. This is the only
@@ -156,7 +156,7 @@ enum class ConnectionType {
      *   evict only if this longer-known peer is offline.
      * - move node addresses from New to Tried table, so that we have more
      *   connectable addresses in our AddrMan.
-     * Note that in the literature ("Eclipse Attacks on Bitcoin’s Peer-to-Peer Network")
+     * Note that in the literature ("Eclipse Attacks on Blinkhash’s Peer-to-Peer Network")
      * only the latter feature is referred to as "feeler connections",
      * although in our codebase feeler connections encompass test-before-evict as well.
      * We make these connections approximately every FEELER_INTERVAL:
@@ -1241,4 +1241,4 @@ struct NodeEvictionCandidate
  */
 void ProtectEvictionCandidatesByRatio(std::vector<NodeEvictionCandidate>& vEvictionCandidates);
 
-#endif // BITCOIN_NET_H
+#endif // BLINKHASH_NET_H

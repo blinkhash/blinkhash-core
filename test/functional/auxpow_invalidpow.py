@@ -8,7 +8,7 @@
 # permanently invalid.  So resubmitting the same block with a valid auxpow
 # should then work fine.
 
-from test_framework.test_framework import BitcoinTestFramework
+from test_framework.test_framework import BlinkhashTestFramework
 from test_framework.blocktools import (
   create_block,
   create_coinbase,
@@ -25,7 +25,7 @@ from test_framework.auxpow_testing import computeAuxpow
 import codecs
 from io import BytesIO
 
-class AuxpowInvalidPoWTest (BitcoinTestFramework):
+class AuxpowInvalidPoWTest (BlinkhashTestFramework):
 
   def set_test_params (self):
     self.num_nodes = 1

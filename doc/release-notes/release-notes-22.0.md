@@ -1,7 +1,7 @@
 22.0 Release Notes
 ==================
 
-Bitcoin Core version 22.0 is now available from:
+Blinkhash Core version 22.0 is now available from:
 
   <https://bitcoincore.org/bin/bitcoin-core-22.0/>
 
@@ -21,36 +21,36 @@ How to Upgrade
 
 If you are running an older version, shut it down. Wait until it has completely
 shut down (which might take a few minutes in some cases), then run the
-installer (on Windows) or just copy over `/Applications/Bitcoin-Qt` (on Mac)
-or `bitcoind`/`bitcoin-qt` (on Linux).
+installer (on Windows) or just copy over `/Applications/Blinkhash-Qt` (on Mac)
+or `blinkhashd`/`blinkhash-qt` (on Linux).
 
-Upgrading directly from a version of Bitcoin Core that has reached its EOL is
+Upgrading directly from a version of Blinkhash Core that has reached its EOL is
 possible, but it might take some time if the data directory needs to be migrated. Old
-wallet versions of Bitcoin Core are generally supported.
+wallet versions of Blinkhash Core are generally supported.
 
 Compatibility
 ==============
 
-Bitcoin Core is supported and extensively tested on operating systems
-using the Linux kernel, macOS 10.14+, and Windows 7 and newer.  Bitcoin
+Blinkhash Core is supported and extensively tested on operating systems
+using the Linux kernel, macOS 10.14+, and Windows 7 and newer.  Blinkhash
 Core should also work on most other Unix-like systems but is not as
-frequently tested on them.  It is not recommended to use Bitcoin Core on
+frequently tested on them.  It is not recommended to use Blinkhash Core on
 unsupported systems.
 
-From Bitcoin Core 22.0 onwards, macOS versions earlier than 10.14 are no longer supported.
+From Blinkhash Core 22.0 onwards, macOS versions earlier than 10.14 are no longer supported.
 
 Notable changes
 ===============
 
 P2P and network changes
 -----------------------
-- Added support for running Bitcoin Core as an
+- Added support for running Blinkhash Core as an
   [I2P (Invisible Internet Project)](https://en.wikipedia.org/wiki/I2P) service
   and connect to such services. See [i2p.md](https://github.com/bitcoin/bitcoin/blob/22.x/doc/i2p.md) for details. (#20685)
 - This release removes support for Tor version 2 hidden services in favor of Tor
   v3 only, as the Tor network [dropped support for Tor
   v2](https://blog.torproject.org/v2-deprecation-timeline) with the release of
-  Tor version 0.4.6.  Henceforth, Bitcoin Core ignores Tor v2 addresses; it
+  Tor version 0.4.6.  Henceforth, Blinkhash Core ignores Tor v2 addresses; it
   neither rumors them over the network to other peers, nor stores them in memory
   or to `peers.dat`.  (#22050)
 
@@ -95,7 +95,7 @@ New and Updated RPCs
   of `decodescript` these fields are top-level attributes, and included again as attributes
   of the `scriptPubKey` object. (#20286)
 
-- When creating a hex-encoded bitcoin transaction using the `bitcoin-tx` utility
+- When creating a hex-encoded blinkhash transaction using the `blinkhash-tx` utility
   with the `-json` option set, the following fields: `addresses`, `reqSigs` are no longer
   returned in the tx output of the response. (#20286)
 
@@ -137,7 +137,7 @@ Files
 - The list of banned hosts and networks (via `setban` RPC) is now saved on disk
   in JSON format in `banlist.json` instead of `banlist.dat`. `banlist.dat` is
   only read on startup if `banlist.json` is not present. Changes are only written to the new
-  `banlist.json`. A future version of Bitcoin Core may completely ignore
+  `banlist.json`. A future version of Blinkhash Core may completely ignore
   `banlist.dat`. (#20966)
 
 New settings
@@ -152,7 +152,7 @@ Updated settings
 
 Changes to Wallet or GUI related settings can be found in the GUI or Wallet section below.
 
-- Passing an invalid `-rpcauth` argument now cause bitcoind to fail to start.  (#20461)
+- Passing an invalid `-rpcauth` argument now cause blinkhashd to fail to start.  (#20461)
 
 Tools and Utilities
 -------------------
@@ -160,12 +160,12 @@ Tools and Utilities
 - A new CLI `-addrinfo` command returns the number of addresses known to the
   node per network type (including Tor v2 versus v3) and total. This can be
   useful to see if the node knows enough addresses in a network to use options
-  like `-onlynet=<network>` or to upgrade to this release of Bitcoin Core 22.0
+  like `-onlynet=<network>` or to upgrade to this release of Blinkhash Core 22.0
   that supports Tor v3 only.  (#21595)
 
-- A new `-rpcwaittimeout` argument to `bitcoin-cli` sets the timeout
+- A new `-rpcwaittimeout` argument to `blinkhash-cli` sets the timeout
   in seconds to use with `-rpcwait`. If the timeout expires,
-  `bitcoin-cli` will report a failure. (#21056)
+  `blinkhash-cli` will report a failure. (#21056)
 
 Wallet
 ------
@@ -316,7 +316,7 @@ A detailed list of changes in this version follows. To keep the list to a manage
 - bitcoin/bitcoin#20965 net, rpc:  return `NET_UNROUTABLE` as `not_publicly_routable`, automate helps (jonatack)
 - bitcoin/bitcoin#20966 banman: save the banlist in a JSON format on disk (vasild)
 - bitcoin/bitcoin#21015 Make all of `net_processing` (and some of net) use std::chrono types (dhruv)
-- bitcoin/bitcoin#21029 bitcoin-cli: Correct docs (no "generatenewaddress" exists) (luke-jr)
+- bitcoin/bitcoin#21029 blinkhash-cli: Correct docs (no "generatenewaddress" exists) (luke-jr)
 - bitcoin/bitcoin#21148 Split orphan handling from `net_processing` into txorphanage (ajtowns)
 - bitcoin/bitcoin#21162 Net Processing: Move RelayTransaction() into PeerManager (jnewbery)
 - bitcoin/bitcoin#21167 make `CNode::m_inbound_onion` public, initialize explicitly (jonatack)
@@ -411,7 +411,7 @@ A detailed list of changes in this version follows. To keep the list to a manage
 - bitcoin/bitcoin#22686 Use GetSelectionAmount in ApproximateBestSubset (achow101)
 
 ### RPC and other APIs
-- bitcoin/bitcoin#18335, bitcoin/bitcoin#21484 cli: Print useful error if bitcoind rpc work queue exceeded (LarryRuane)
+- bitcoin/bitcoin#18335, bitcoin/bitcoin#21484 cli: Print useful error if blinkhashd rpc work queue exceeded (LarryRuane)
 - bitcoin/bitcoin#18466 Fix invalid parameter error codes for `{sign,verify}message` RPCs (theStack)
 - bitcoin/bitcoin#18772 Calculate fees in `getblock` using BlockUndo data (robot-visions)
 - bitcoin/bitcoin#19033 http: Release work queue after event base finish (promag)
@@ -455,76 +455,76 @@ A detailed list of changes in this version follows. To keep the list to a manage
 - bitcoin/bitcoin#21836 scripted-diff: Replace three dots with ellipsis in the ui strings (hebasto)
 - bitcoin/bitcoin#21935 Enable external signer support for GUI builds (Sjors)
 - bitcoin/bitcoin#22133 Make QWindowsVistaStylePlugin available again (regression) (hebasto)
-- bitcoin-core/gui#4 UI external signer support (e.g. hardware wallet) (Sjors)
-- bitcoin-core/gui#13 Hide peer detail view if multiple are selected (promag)
-- bitcoin-core/gui#18 Add peertablesortproxy module (hebasto)
-- bitcoin-core/gui#21 Improve pruning tooltip (fluffypony, BitcoinErrorLog)
-- bitcoin-core/gui#72 Log static plugins meta data and used style (hebasto)
-- bitcoin-core/gui#79 Embed monospaced font (hebasto)
-- bitcoin-core/gui#85 Remove unused "What's This" button in dialogs on Windows OS (hebasto)
-- bitcoin-core/gui#115 Replace "Hide tray icon" option with positive "Show tray icon" one (hebasto)
-- bitcoin-core/gui#118 Remove BDB version from the Information tab (hebasto)
-- bitcoin-core/gui#121 Early subscribe core signals in transaction table model (promag)
-- bitcoin-core/gui#123 Do not accept command while executing another one (hebasto)
-- bitcoin-core/gui#125 Enable changing the autoprune block space size in intro dialog (luke-jr)
-- bitcoin-core/gui#138 Unlock encrypted wallet "OK" button bugfix (mjdietzx)
-- bitcoin-core/gui#139 doc: Improve gui/src/qt README.md (jarolrod)
-- bitcoin-core/gui#154 Support macOS Dark mode (goums, Uplab)
-- bitcoin-core/gui#162 Add network to peers window and peer details (jonatack)
-- bitcoin-core/gui#163, bitcoin-core/gui#180 Peer details: replace Direction with Connection Type (jonatack)
-- bitcoin-core/gui#164 Handle peer addition/removal in a right way (hebasto)
-- bitcoin-core/gui#165 Save QSplitter state in QSettings (hebasto)
-- bitcoin-core/gui#173 Follow Qt docs when implementing rowCount and columnCount (hebasto)
-- bitcoin-core/gui#179 Add Type column to peers window, update peer details name/tooltip (jonatack)
-- bitcoin-core/gui#186 Add information to "Confirm fee bump" window (prayank23)
-- bitcoin-core/gui#189 Drop workaround for QTBUG-42503 which was fixed in Qt 5.5.0 (prusnak)
-- bitcoin-core/gui#194 Save/restore RPCConsole geometry only for window (hebasto)
-- bitcoin-core/gui#202 Fix right panel toggle in peers tab (RandyMcMillan)
-- bitcoin-core/gui#203 Display plain "Inbound" in peer details (jonatack)
-- bitcoin-core/gui#204 Drop buggy TableViewLastColumnResizingFixer class (hebasto)
-- bitcoin-core/gui#205, bitcoin-core/gui#229 Save/restore TransactionView and recentRequestsView tables column sizes (hebasto)
-- bitcoin-core/gui#206 Display fRelayTxes and `bip152_highbandwidth_{to, from}` in peer details (jonatack)
-- bitcoin-core/gui#213 Add Copy Address Action to Payment Requests (jarolrod)
-- bitcoin-core/gui#214 Disable requests context menu actions when appropriate (jarolrod)
-- bitcoin-core/gui#217 Make warning label look clickable (jarolrod)
-- bitcoin-core/gui#219 Prevent the main window popup menu (hebasto)
-- bitcoin-core/gui#220 Do not translate file extensions (hebasto)
-- bitcoin-core/gui#221 RPCConsole translatable string fixes and improvements (jonatack)
-- bitcoin-core/gui#226 Add "Last Block" and "Last Tx" rows to peer details area (jonatack)
-- bitcoin-core/gui#233 qt test: Don't bind to regtest port (achow101)
-- bitcoin-core/gui#243 Fix issue when disabling the auto-enabled blank wallet checkbox (jarolrod)
-- bitcoin-core/gui#246 Revert "qt: Use "fusion" style on macOS Big Sur with old Qt" (hebasto)
-- bitcoin-core/gui#248 For values of "Bytes transferred" and "Bytes/s" with 1000-based prefix names use 1000-based divisor instead of 1024-based (wodry)
-- bitcoin-core/gui#251 Improve URI/file handling message (hebasto)
-- bitcoin-core/gui#256 Save/restore column sizes of the tables in the Peers tab (hebasto)
-- bitcoin-core/gui#260 Handle exceptions isntead of crash (hebasto)
-- bitcoin-core/gui#263 Revamp context menus (hebasto)
-- bitcoin-core/gui#271 Don't clear console prompt when font resizing (jarolrod)
-- bitcoin-core/gui#275 Support runtime appearance adjustment on macOS (hebasto)
-- bitcoin-core/gui#276 Elide long strings in their middle in the Peers tab (hebasto)
-- bitcoin-core/gui#281 Set shortcuts for console's resize buttons (jarolrod)
-- bitcoin-core/gui#293 Enable wordWrap for Services (RandyMcMillan)
-- bitcoin-core/gui#296 Do not use QObject::tr plural syntax for numbers with a unit symbol (hebasto)
-- bitcoin-core/gui#297 Avoid unnecessary translations (hebasto)
-- bitcoin-core/gui#298 Peertableview alternating row colors (RandyMcMillan)
-- bitcoin-core/gui#300 Remove progress bar on modal overlay (brunoerg)
-- bitcoin-core/gui#309 Add access to the Peers tab from the network icon (hebasto)
-- bitcoin-core/gui#311 Peers Window rename 'Peer id' to 'Peer' (jarolrod)
-- bitcoin-core/gui#313 Optimize string concatenation by default (hebasto)
-- bitcoin-core/gui#325 Align numbers in the "Peer Id" column to the right (hebasto)
-- bitcoin-core/gui#329 Make console buttons look clickable (jarolrod)
-- bitcoin-core/gui#330 Allow prompt icon to be colorized (jarolrod)
-- bitcoin-core/gui#331 Make RPC console welcome message translation-friendly (hebasto)
-- bitcoin-core/gui#332 Replace disambiguation strings with translator comments (hebasto)
-- bitcoin-core/gui#335 test: Use QSignalSpy instead of QEventLoop (jarolrod)
-- bitcoin-core/gui#343 Improve the GUI responsiveness when progress dialogs are used (hebasto)
-- bitcoin-core/gui#361 Fix GUI segfault caused by bitcoin/bitcoin#22216 (ryanofsky)
-- bitcoin-core/gui#362 Add keyboard shortcuts to context menus (luke-jr)
-- bitcoin-core/gui#366 Dark Mode fixes/portability (luke-jr)
-- bitcoin-core/gui#375 Emit dataChanged signal to dynamically re-sort Peers table (hebasto)
-- bitcoin-core/gui#393 Fix regression in "Encrypt Wallet" menu item (hebasto)
-- bitcoin-core/gui#396 Ensure external signer option remains disabled without signers (achow101)
-- bitcoin-core/gui#406 Handle new added plurals in `bitcoin_en.ts` (hebasto)
+- blinkhash-core/gui#4 UI external signer support (e.g. hardware wallet) (Sjors)
+- blinkhash-core/gui#13 Hide peer detail view if multiple are selected (promag)
+- blinkhash-core/gui#18 Add peertablesortproxy module (hebasto)
+- blinkhash-core/gui#21 Improve pruning tooltip (fluffypony, BlinkhashErrorLog)
+- blinkhash-core/gui#72 Log static plugins meta data and used style (hebasto)
+- blinkhash-core/gui#79 Embed monospaced font (hebasto)
+- blinkhash-core/gui#85 Remove unused "What's This" button in dialogs on Windows OS (hebasto)
+- blinkhash-core/gui#115 Replace "Hide tray icon" option with positive "Show tray icon" one (hebasto)
+- blinkhash-core/gui#118 Remove BDB version from the Information tab (hebasto)
+- blinkhash-core/gui#121 Early subscribe core signals in transaction table model (promag)
+- blinkhash-core/gui#123 Do not accept command while executing another one (hebasto)
+- blinkhash-core/gui#125 Enable changing the autoprune block space size in intro dialog (luke-jr)
+- blinkhash-core/gui#138 Unlock encrypted wallet "OK" button bugfix (mjdietzx)
+- blinkhash-core/gui#139 doc: Improve gui/src/qt README.md (jarolrod)
+- blinkhash-core/gui#154 Support macOS Dark mode (goums, Uplab)
+- blinkhash-core/gui#162 Add network to peers window and peer details (jonatack)
+- blinkhash-core/gui#163, blinkhash-core/gui#180 Peer details: replace Direction with Connection Type (jonatack)
+- blinkhash-core/gui#164 Handle peer addition/removal in a right way (hebasto)
+- blinkhash-core/gui#165 Save QSplitter state in QSettings (hebasto)
+- blinkhash-core/gui#173 Follow Qt docs when implementing rowCount and columnCount (hebasto)
+- blinkhash-core/gui#179 Add Type column to peers window, update peer details name/tooltip (jonatack)
+- blinkhash-core/gui#186 Add information to "Confirm fee bump" window (prayank23)
+- blinkhash-core/gui#189 Drop workaround for QTBUG-42503 which was fixed in Qt 5.5.0 (prusnak)
+- blinkhash-core/gui#194 Save/restore RPCConsole geometry only for window (hebasto)
+- blinkhash-core/gui#202 Fix right panel toggle in peers tab (RandyMcMillan)
+- blinkhash-core/gui#203 Display plain "Inbound" in peer details (jonatack)
+- blinkhash-core/gui#204 Drop buggy TableViewLastColumnResizingFixer class (hebasto)
+- blinkhash-core/gui#205, blinkhash-core/gui#229 Save/restore TransactionView and recentRequestsView tables column sizes (hebasto)
+- blinkhash-core/gui#206 Display fRelayTxes and `bip152_highbandwidth_{to, from}` in peer details (jonatack)
+- blinkhash-core/gui#213 Add Copy Address Action to Payment Requests (jarolrod)
+- blinkhash-core/gui#214 Disable requests context menu actions when appropriate (jarolrod)
+- blinkhash-core/gui#217 Make warning label look clickable (jarolrod)
+- blinkhash-core/gui#219 Prevent the main window popup menu (hebasto)
+- blinkhash-core/gui#220 Do not translate file extensions (hebasto)
+- blinkhash-core/gui#221 RPCConsole translatable string fixes and improvements (jonatack)
+- blinkhash-core/gui#226 Add "Last Block" and "Last Tx" rows to peer details area (jonatack)
+- blinkhash-core/gui#233 qt test: Don't bind to regtest port (achow101)
+- blinkhash-core/gui#243 Fix issue when disabling the auto-enabled blank wallet checkbox (jarolrod)
+- blinkhash-core/gui#246 Revert "qt: Use "fusion" style on macOS Big Sur with old Qt" (hebasto)
+- blinkhash-core/gui#248 For values of "Bytes transferred" and "Bytes/s" with 1000-based prefix names use 1000-based divisor instead of 1024-based (wodry)
+- blinkhash-core/gui#251 Improve URI/file handling message (hebasto)
+- blinkhash-core/gui#256 Save/restore column sizes of the tables in the Peers tab (hebasto)
+- blinkhash-core/gui#260 Handle exceptions isntead of crash (hebasto)
+- blinkhash-core/gui#263 Revamp context menus (hebasto)
+- blinkhash-core/gui#271 Don't clear console prompt when font resizing (jarolrod)
+- blinkhash-core/gui#275 Support runtime appearance adjustment on macOS (hebasto)
+- blinkhash-core/gui#276 Elide long strings in their middle in the Peers tab (hebasto)
+- blinkhash-core/gui#281 Set shortcuts for console's resize buttons (jarolrod)
+- blinkhash-core/gui#293 Enable wordWrap for Services (RandyMcMillan)
+- blinkhash-core/gui#296 Do not use QObject::tr plural syntax for numbers with a unit symbol (hebasto)
+- blinkhash-core/gui#297 Avoid unnecessary translations (hebasto)
+- blinkhash-core/gui#298 Peertableview alternating row colors (RandyMcMillan)
+- blinkhash-core/gui#300 Remove progress bar on modal overlay (brunoerg)
+- blinkhash-core/gui#309 Add access to the Peers tab from the network icon (hebasto)
+- blinkhash-core/gui#311 Peers Window rename 'Peer id' to 'Peer' (jarolrod)
+- blinkhash-core/gui#313 Optimize string concatenation by default (hebasto)
+- blinkhash-core/gui#325 Align numbers in the "Peer Id" column to the right (hebasto)
+- blinkhash-core/gui#329 Make console buttons look clickable (jarolrod)
+- blinkhash-core/gui#330 Allow prompt icon to be colorized (jarolrod)
+- blinkhash-core/gui#331 Make RPC console welcome message translation-friendly (hebasto)
+- blinkhash-core/gui#332 Replace disambiguation strings with translator comments (hebasto)
+- blinkhash-core/gui#335 test: Use QSignalSpy instead of QEventLoop (jarolrod)
+- blinkhash-core/gui#343 Improve the GUI responsiveness when progress dialogs are used (hebasto)
+- blinkhash-core/gui#361 Fix GUI segfault caused by bitcoin/bitcoin#22216 (ryanofsky)
+- blinkhash-core/gui#362 Add keyboard shortcuts to context menus (luke-jr)
+- blinkhash-core/gui#366 Dark Mode fixes/portability (luke-jr)
+- blinkhash-core/gui#375 Emit dataChanged signal to dynamically re-sort Peers table (hebasto)
+- blinkhash-core/gui#393 Fix regression in "Encrypt Wallet" menu item (hebasto)
+- blinkhash-core/gui#396 Ensure external signer option remains disabled without signers (achow101)
+- blinkhash-core/gui#406 Handle new added plurals in `blinkhash_en.ts` (hebasto)
 
 ### Build system
 - bitcoin/bitcoin#17227 Add Android packaging support (icota)
@@ -555,7 +555,7 @@ A detailed list of changes in this version follows. To keep the list to a manage
 - bitcoin/bitcoin#20471 Use C++17 in depends (fanquake)
 - bitcoin/bitcoin#20496 Drop unneeded macOS framework dependencies (hebasto)
 - bitcoin/bitcoin#20520 Do not force Precompiled Headers (PCH) for building Qt on Linux (hebasto)
-- bitcoin/bitcoin#20549 Support make src/bitcoin-node and src/bitcoin-gui (promag)
+- bitcoin/bitcoin#20549 Support make src/blinkhash-node and src/blinkhash-gui (promag)
 - bitcoin/bitcoin#20565 Ensure PIC build for bdb on Android (BlockMechanic)
 - bitcoin/bitcoin#20594 Fix getauxval calls in randomenv.cpp (jonasschnelli)
 - bitcoin/bitcoin#20603 Update crc32c subtree (MarcoFalke)
@@ -571,7 +571,7 @@ A detailed list of changes in this version follows. To keep the list to a manage
 - bitcoin/bitcoin#20936 build fuzz tests by default (danben)
 - bitcoin/bitcoin#20937 guix: Make nsis reproducible by respecting SOURCE-DATE-EPOCH (dongcarl)
 - bitcoin/bitcoin#20938 fix linking against -latomic when building for riscv (fanquake)
-- bitcoin/bitcoin#20939 fix `RELOC_SECTION` security check for bitcoin-util (fanquake)
+- bitcoin/bitcoin#20939 fix `RELOC_SECTION` security check for blinkhash-util (fanquake)
 - bitcoin/bitcoin#20963 gitian-linux: Build binaries for 64-bit POWER (continued) (laanwj)
 - bitcoin/bitcoin#21036 gitian: Bump descriptors to focal for 22.0 (fanquake)
 - bitcoin/bitcoin#21045 Adds switch to enable/disable randomized base address in MSVC builds (EthanHeilman)
@@ -611,7 +611,7 @@ A detailed list of changes in this version follows. To keep the list to a manage
 - bitcoin/bitcoin#21495 build, qt: Fix static builds on macOS Big Sur (hebasto)
 - bitcoin/bitcoin#21497 Do not opt-in unused CoreWLAN stuff in depends for macOS (hebasto)
 - bitcoin/bitcoin#21543 Enable safe warnings for msvc builds (hebasto)
-- bitcoin/bitcoin#21565 Make `bitcoin_qt.m4` more generic (fanquake)
+- bitcoin/bitcoin#21565 Make `blinkhash_qt.m4` more generic (fanquake)
 - bitcoin/bitcoin#21610 remove -Wdeprecated-register from NOWARN flags (fanquake)
 - bitcoin/bitcoin#21613 enable -Wdocumentation (fanquake)
 - bitcoin/bitcoin#21629 Fix configuring when building depends with `NO_BDB=1` (fanquake)
@@ -637,7 +637,7 @@ A detailed list of changes in this version follows. To keep the list to a manage
 - bitcoin/bitcoin#22182 guix: Overhaul how guix-{attest,verify} works and hierarchy (dongcarl)
 - bitcoin/bitcoin#22186 build, qt: Fix compiling qt package in depends with GCC 11 (hebasto)
 - bitcoin/bitcoin#22199 macdeploy: minor fixups and simplifications (fanquake)
-- bitcoin/bitcoin#22230 Fix MSVC linker /SubSystem option for bitcoin-qt.exe (hebasto)
+- bitcoin/bitcoin#22230 Fix MSVC linker /SubSystem option for blinkhash-qt.exe (hebasto)
 - bitcoin/bitcoin#22234 Mark print-% target as phony (dgoncharov)
 - bitcoin/bitcoin#22238 improve detection of eBPF support (fanquake)
 - bitcoin/bitcoin#22258 Disable deprecated-copy warning only when external warnings are enabled (MarcoFalke)
@@ -806,7 +806,7 @@ A detailed list of changes in this version follows. To keep the list to a manage
 - bitcoin/bitcoin#21810 fuzz: Various RPC fuzzer follow-ups (practicalswift)
 - bitcoin/bitcoin#21814 Fix `feature_config_args.py` intermittent issue (MarcoFalke)
 - bitcoin/bitcoin#21821 Add missing test for empty P2WSH redeem (MarcoFalke)
-- bitcoin/bitcoin#21822 Resolve bug in `interface_bitcoin_cli.py` (klementtan)
+- bitcoin/bitcoin#21822 Resolve bug in `interface_blinkhash_cli.py` (klementtan)
 - bitcoin/bitcoin#21846 fuzz: Add `-fsanitize=integer` suppression needed for RPC fuzzer (`generateblock`) (practicalswift)
 - bitcoin/bitcoin#21849 fuzz: Limit toxic test globals to their respective scope (MarcoFalke)
 - bitcoin/bitcoin#21867 use MiniWallet for `p2p_blocksonly.py` (theStack)
@@ -857,7 +857,7 @@ A detailed list of changes in this version follows. To keep the list to a manage
 - bitcoin/bitcoin#22224 Update msvc and appveyor builds to use Qt5.12.11 binaries (sipsorcery)
 - bitcoin/bitcoin#22249 Kill process group to avoid dangling processes when using `--failfast` (S3RK)
 - bitcoin/bitcoin#22267 fuzz: Speed up crypto fuzz target (MarcoFalke)
-- bitcoin/bitcoin#22270 Add bitcoin-util tests (+refactors) (MarcoFalke)
+- bitcoin/bitcoin#22270 Add blinkhash-util tests (+refactors) (MarcoFalke)
 - bitcoin/bitcoin#22271 fuzz: Assert roundtrip equality for `CPubKey` (theStack)
 - bitcoin/bitcoin#22279 fuzz: add missing ECCVerifyHandle to `base_encode_decode` (apoelstra)
 - bitcoin/bitcoin#22292 bench, doc: benchmarking updates and fixups (jonatack)
@@ -893,13 +893,13 @@ A detailed list of changes in this version follows. To keep the list to a manage
 - bitcoin/bitcoin#20605 init: Signal-safe instant shutdown (laanwj)
 - bitcoin/bitcoin#20608 contrib: Add symbol check test for PE binaries (fanquake)
 - bitcoin/bitcoin#20689 contrib: Replace binary verification script verify.sh with python rewrite (theStack)
-- bitcoin/bitcoin#20715 util: Add argsmanager::getcommand() and use it in bitcoin-wallet (MarcoFalke)
+- bitcoin/bitcoin#20715 util: Add argsmanager::getcommand() and use it in blinkhash-wallet (MarcoFalke)
 - bitcoin/bitcoin#20735 script: Remove outdated extract-osx-sdk.sh (hebasto)
 - bitcoin/bitcoin#20817 lint: Update list of spelling linter false positives, bump to codespell 2.0.0 (theStack)
-- bitcoin/bitcoin#20884 script: Improve robustness of bitcoind.service on startup (hebasto)
+- bitcoin/bitcoin#20884 script: Improve robustness of blinkhashd.service on startup (hebasto)
 - bitcoin/bitcoin#20906 contrib: Embed c++11 patch in `install_db4.sh` (gruve-p)
 - bitcoin/bitcoin#21004 contrib: Fix docker args conditional in gitian-build (setpill)
-- bitcoin/bitcoin#21007 bitcoind: Add -daemonwait option to wait for initialization (laanwj)
+- bitcoin/bitcoin#21007 blinkhashd: Add -daemonwait option to wait for initialization (laanwj)
 - bitcoin/bitcoin#21041 log: Move "Pre-allocating up to position 0x[…] in […].dat" log message to debug category (practicalswift)
 - bitcoin/bitcoin#21059 Drop boost/preprocessor dependencies (hebasto)
 - bitcoin/bitcoin#21087 guix: Passthrough `BASE_CACHE` into container (dongcarl)
@@ -923,7 +923,7 @@ A detailed list of changes in this version follows. To keep the list to a manage
 - bitcoin/bitcoin#21471 bugfix: Fix `bech32_encode` calls in `gen_key_io_test_vectors.py` (sipa)
 - bitcoin/bitcoin#21615 script: Add trusted key for hebasto (hebasto)
 - bitcoin/bitcoin#21664 contrib: Use lief for macos and windows symbol & security checks (fanquake)
-- bitcoin/bitcoin#21695 contrib: Remove no longer used contrib/bitcoin-qt.pro (hebasto)
+- bitcoin/bitcoin#21695 contrib: Remove no longer used contrib/blinkhash-qt.pro (hebasto)
 - bitcoin/bitcoin#21711 guix: Add full installation and usage documentation (dongcarl)
 - bitcoin/bitcoin#21799 guix: Use `gcc-8` across the board (dongcarl)
 - bitcoin/bitcoin#21802 Avoid UB in util/asmap (advance a dereferenceable iterator outside its valid range) (MarcoFalke)
@@ -954,7 +954,7 @@ A detailed list of changes in this version follows. To keep the list to a manage
 - bitcoin/bitcoin#20473 Document current boost dependency as 1.71.0 (laanwj)
 - bitcoin/bitcoin#20512 Add bash as an OpenBSD dependency (emilengler)
 - bitcoin/bitcoin#20568 Use FeeModes doc helper in estimatesmartfee (MarcoFalke)
-- bitcoin/bitcoin#20577 libconsensus: add missing error code description, fix NBitcoin link (theStack)
+- bitcoin/bitcoin#20577 libconsensus: add missing error code description, fix NBlinkhash link (theStack)
 - bitcoin/bitcoin#20587 Tidy up Tor doc (more stringent) (wodry)
 - bitcoin/bitcoin#20592 Update wtxidrelay documentation per BIP339 (jonatack)
 - bitcoin/bitcoin#20601 Update for FreeBSD 12.2, add GUI Build Instructions (jarolrod)
@@ -967,7 +967,7 @@ A detailed list of changes in this version follows. To keep the list to a manage
 - bitcoin/bitcoin#20829 Add -netinfo help (jonatack)
 - bitcoin/bitcoin#20830 Update developer notes with signet (jonatack)
 - bitcoin/bitcoin#20890 Add explicit macdeployqtplus dependencies install step (hebasto)
-- bitcoin/bitcoin#20913 Add manual page generation for bitcoin-util (laanwj)
+- bitcoin/bitcoin#20913 Add manual page generation for blinkhash-util (laanwj)
 - bitcoin/bitcoin#20985 Add xorriso to macOS depends packages (fanquake)
 - bitcoin/bitcoin#20986 Update developer notes to discourage very long lines (jnewbery)
 - bitcoin/bitcoin#20987 Add instructions for generating RPC docs (ben-kaufman)
@@ -985,7 +985,7 @@ A detailed list of changes in this version follows. To keep the list to a manage
 - bitcoin/bitcoin#21324 Update build instructions for Fedora (hebasto)
 - bitcoin/bitcoin#21343 Revamp macOS build doc (jarolrod)
 - bitcoin/bitcoin#21346 install qt5 when building on macOS (fanquake)
-- bitcoin/bitcoin#21384 doc: add signet to bitcoin.conf documentation (jonatack)
+- bitcoin/bitcoin#21384 doc: add signet to blinkhash.conf documentation (jonatack)
 - bitcoin/bitcoin#21394 Improve comment about protected peers (amitiuttarwar)
 - bitcoin/bitcoin#21398 Update fuzzing docs for afl-clang-lto (MarcoFalke)
 - bitcoin/bitcoin#21444 net, doc: Doxygen updates and fixes in netbase.{h,cpp} (jonatack)
@@ -994,11 +994,11 @@ A detailed list of changes in this version follows. To keep the list to a manage
 - bitcoin/bitcoin#21661 Fix name of script guix-build (Emzy)
 - bitcoin/bitcoin#21672 Remove boostrap info from `GUIX_COMMON_FLAGS` doc (fanquake)
 - bitcoin/bitcoin#21688 Note on SDK for macOS depends cross-compile (jarolrod)
-- bitcoin/bitcoin#21709 Update reduce-memory.md and bitcoin.conf -maxconnections info (jonatack)
+- bitcoin/bitcoin#21709 Update reduce-memory.md and blinkhash.conf -maxconnections info (jonatack)
 - bitcoin/bitcoin#21710 update helps for addnode rpc and -addnode/-maxconnections config options (jonatack)
 - bitcoin/bitcoin#21752 Clarify that feerates are per virtual size (MarcoFalke)
 - bitcoin/bitcoin#21811 Remove Visual Studio 2017 reference from readme (sipsorcery)
-- bitcoin/bitcoin#21818 Fixup -coinstatsindex help, update bitcoin.conf and files.md (jonatack)
+- bitcoin/bitcoin#21818 Fixup -coinstatsindex help, update blinkhash.conf and files.md (jonatack)
 - bitcoin/bitcoin#21856 add OSS-Fuzz section to fuzzing.md doc (adamjonas)
 - bitcoin/bitcoin#21912 Remove mention of priority estimation (MarcoFalke)
 - bitcoin/bitcoin#21925 Update bips.md for 0.21.1 (MarcoFalke)
@@ -1006,7 +1006,7 @@ A detailed list of changes in this version follows. To keep the list to a manage
 - bitcoin/bitcoin#21947 Fix OSS-Fuzz links (MarcoFalke)
 - bitcoin/bitcoin#21988 note that brew installed qt is not supported (jarolrod)
 - bitcoin/bitcoin#22056 describe in fuzzing.md how to reproduce a CI crash (jonatack)
-- bitcoin/bitcoin#22080 add maxuploadtarget to bitcoin.conf example (jarolrod)
+- bitcoin/bitcoin#22080 add maxuploadtarget to blinkhash.conf example (jarolrod)
 - bitcoin/bitcoin#22088 Improve note on choosing posix mingw32 (jarolrod)
 - bitcoin/bitcoin#22109 Fix external links (IRC, …) (MarcoFalke)
 - bitcoin/bitcoin#22121 Various validation doc fixups (MarcoFalke)
@@ -1020,7 +1020,7 @@ A detailed list of changes in this version follows. To keep the list to a manage
 - bitcoin/bitcoin#22349 Repository IRC updates (jonatack)
 - bitcoin/bitcoin#22360 Remove unused section from release process (MarcoFalke)
 - bitcoin/bitcoin#22369 Add steps for Transifex to release process (jonatack)
-- bitcoin/bitcoin#22393 Added info to bitcoin.conf doc (bliotti)
+- bitcoin/bitcoin#22393 Added info to blinkhash.conf doc (bliotti)
 - bitcoin/bitcoin#22402 Install Rosetta on M1-macOS for qt in depends (hebasto)
 - bitcoin/bitcoin#22432 Fix incorrect `testmempoolaccept` doc (glozow)
 - bitcoin/bitcoin#22648 doc, test: improve i2p/tor docs and i2p reachable unit tests (jonatack)

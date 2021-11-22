@@ -2,8 +2,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef BITCOIN_BITCOIN_CONFIG_H
-#define BITCOIN_BITCOIN_CONFIG_H
+#ifndef BLINKHASH_BLINKHASH_CONFIG_H
+#define BLINKHASH_BLINKHASH_CONFIG_H
 
 /* Version Build */
 #define CLIENT_VERSION_BUILD $
@@ -24,7 +24,7 @@
 #define COPYRIGHT_HOLDERS_FINAL "The Bitcoin Core developers"
 
 /* Replacement for %s in copyright holders string */
-#define COPYRIGHT_HOLDERS_SUBSTITUTION "Bitcoin Core"
+#define COPYRIGHT_HOLDERS_SUBSTITUTION "Blinkhash Core"
 
 /* Copyright year */
 #define COPYRIGHT_YEAR $
@@ -181,7 +181,7 @@
 #define PACKAGE_BUGREPORT "https://github.com/bitcoin/bitcoin/issues"
 
 /* Define to the full name of this package. */
-#define PACKAGE_NAME "Bitcoin Core"
+#define PACKAGE_NAME "Blinkhash Core"
 
 /* Define to the full name and version of this package. */
 #define PACKAGE_STRING $
@@ -211,4 +211,4 @@
 
 #endif // !WINAPI_FAMILY || WINAPI_FAMILY_DESKTOP_APP
 
-#endif //BITCOIN_BITCOIN_CONFIG_H
+#endif //BLINKHASH_BLINKHASH_CONFIG_H

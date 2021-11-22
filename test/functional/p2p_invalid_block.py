@@ -18,13 +18,13 @@ import time
 from test_framework.blocktools import create_block, create_coinbase, create_tx_with_script
 from test_framework.messages import COIN
 from test_framework.p2p import P2PDataStore
-from test_framework.test_framework import BitcoinTestFramework
+from test_framework.test_framework import BlinkhashTestFramework
 from test_framework.util import assert_equal
 
 MAX_FUTURE_BLOCK_TIME = 2 * 60 * 60
 
 
-class InvalidBlockRequestTest(BitcoinTestFramework):
+class InvalidBlockRequestTest(BlinkhashTestFramework):
     def set_test_params(self):
         self.num_nodes = 1
         self.setup_clean_chain = True

@@ -2,7 +2,7 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#include <qt/bitcoinaddressvalidator.h>
+#include <qt/blinkhashaddressvalidator.h>
 
 #include <key_io.h>
 
@@ -15,12 +15,12 @@
   - All lower-case letters except for 'l'
 */
 
-BitcoinAddressEntryValidator::BitcoinAddressEntryValidator(QObject *parent) :
+BlinkhashAddressEntryValidator::BlinkhashAddressEntryValidator(QObject *parent) :
     QValidator(parent)
 {
 }
 
-QValidator::State BitcoinAddressEntryValidator::validate(QString &input, int &pos) const
+QValidator::State BlinkhashAddressEntryValidator::validate(QString &input, int &pos) const
 {
     Q_UNUSED(pos);
 
@@ -80,15 +80,15 @@ QValidator::State BitcoinAddressEntryValidator::validate(QString &input, int &po
     return state;
 }
 
-BitcoinAddressCheckValidator::BitcoinAddressCheckValidator(QObject *parent) :
+BlinkhashAddressCheckValidator::BlinkhashAddressCheckValidator(QObject *parent) :
     QValidator(parent)
 {
 }
 
-QValidator::State BitcoinAddressCheckValidator::validate(QString &input, int &pos) const
+QValidator::State BlinkhashAddressCheckValidator::validate(QString &input, int &pos) const
 {
     Q_UNUSED(pos);
-    // Validate the passed Bitcoin address
+    // Validate the passed Blinkhash address
     if (IsValidDestinationString(input.toStdString())) {
         return QValidator::Acceptable;
     }

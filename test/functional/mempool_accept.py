@@ -7,7 +7,7 @@
 from decimal import Decimal
 import math
 
-from test_framework.test_framework import BitcoinTestFramework
+from test_framework.test_framework import BlinkhashTestFramework
 from test_framework.key import ECKey
 from test_framework.messages import (
     BIP125_SEQUENCE_NUMBER,
@@ -35,7 +35,7 @@ from test_framework.util import (
 )
 
 
-class MempoolAcceptanceTest(BitcoinTestFramework):
+class MempoolAcceptanceTest(BlinkhashTestFramework):
     def set_test_params(self):
         self.num_nodes = 1
         self.extra_args = [[

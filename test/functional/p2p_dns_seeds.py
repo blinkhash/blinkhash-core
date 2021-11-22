@@ -7,10 +7,10 @@
 import itertools
 
 from test_framework.p2p import P2PInterface
-from test_framework.test_framework import BitcoinTestFramework
+from test_framework.test_framework import BlinkhashTestFramework
 
 
-class P2PDNSSeeds(BitcoinTestFramework):
+class P2PDNSSeeds(BlinkhashTestFramework):
     def set_test_params(self):
         self.setup_clean_chain = True
         self.num_nodes = 1
@@ -42,7 +42,7 @@ class P2PDNSSeeds(BitcoinTestFramework):
             extra_args=["-forcednsseed=1", f"-connect={fakeaddr}"],
         )
 
-        # Restore default bitcoind settings
+        # Restore default blinkhashd settings
         self.restart_node(0)
 
 if __name__ == '__main__':

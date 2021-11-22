@@ -3,8 +3,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef BITCOIN_NODE_COINSTATS_H
-#define BITCOIN_NODE_COINSTATS_H
+#ifndef BLINKHASH_NODE_COINSTATS_H
+#define BLINKHASH_NODE_COINSTATS_H
 
 #include <chain.h>
 #include <coins.h>
@@ -75,4 +75,4 @@ uint64_t GetBogoSize(const CScript& script_pub_key);
 
 CDataStream TxOutSer(const COutPoint& outpoint, const Coin& coin);
 
-#endif // BITCOIN_NODE_COINSTATS_H
+#endif // BLINKHASH_NODE_COINSTATS_H

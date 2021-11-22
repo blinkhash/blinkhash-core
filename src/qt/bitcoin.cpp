@@ -3,10 +3,10 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #if defined(HAVE_CONFIG_H)
-#include <config/bitcoin-config.h>
+#include <config/blinkhash-config.h>
 #endif
 
-#include <qt/bitcoin.h>
+#include <qt/blinkhash.h>
 
 #include <chainparams.h>
 #include <init.h>
@@ -15,7 +15,7 @@
 #include <interfaces/node.h>
 #include <node/ui_interface.h>
 #include <noui.h>
-#include <qt/bitcoingui.h>
+#include <qt/blinkhashgui.h>
 #include <qt/clientmodel.h>
 #include <qt/guiconstants.h>
 #include <qt/guiutil.h>
@@ -136,11 +136,11 @@ static void initTranslations(QTranslator &qtTranslatorBase, QTranslator &qtTrans
     if (qtTranslator.load("qt_" + lang_territory, QLibraryInfo::location(QLibraryInfo::TranslationsPath)))
         QApplication::installTranslator(&qtTranslator);
 
-    // Load e.g. bitcoin_de.qm (shortcut "de" needs to be defined in bitcoin.qrc)
+    // Load e.g. blinkhash_de.qm (shortcut "de" needs to be defined in blinkhash.qrc)
     if (translatorBase.load(lang, ":/translations/"))
         QApplication::installTranslator(&translatorBase);
 
-    // Load e.g. bitcoin_de_DE.qm (shortcut "de_DE" needs to be defined in bitcoin.qrc)
+    // Load e.g. blinkhash_de_DE.qm (shortcut "de_DE" needs to be defined in blinkhash.qrc)
     if (translator.load(lang_territory, ":/translations/"))
         QApplication::installTranslator(&translator);
 }
@@ -153,8 +153,8 @@ static bool InitSettings()
 
     std::vector<std::string> errors;
     if (!gArgs.ReadSettingsFile(&errors)) {
-        std::string error = QT_TRANSLATE_NOOP("bitcoin-core", "Settings file could not be read");
-        std::string error_translated = QCoreApplication::translate("bitcoin-core", error.c_str()).toStdString();
+        std::string error = QT_TRANSLATE_NOOP("blinkhash-core", "Settings file could not be read");
+        std::string error_translated = QCoreApplication::translate("blinkhash-core", error.c_str()).toStdString();
         InitError(Untranslated(strprintf("%s:\n%s\n", error, MakeUnorderedList(errors))));
 
         QMessageBox messagebox(QMessageBox::Critical, PACKAGE_NAME, QString::fromStdString(strprintf("%s.", error_translated)), QMessageBox::Reset | QMessageBox::Abort);
@@ -176,8 +176,8 @@ static bool InitSettings()
 
     errors.clear();
     if (!gArgs.WriteSettingsFile(&errors)) {
-        std::string error = QT_TRANSLATE_NOOP("bitcoin-core", "Settings file could not be written");
-        std::string error_translated = QCoreApplication::translate("bitcoin-core", error.c_str()).toStdString();
+        std::string error = QT_TRANSLATE_NOOP("blinkhash-core", "Settings file could not be written");
+        std::string error_translated = QCoreApplication::translate("blinkhash-core", error.c_str()).toStdString();
         InitError(Untranslated(strprintf("%s:\n%s\n", error, MakeUnorderedList(errors))));
 
         QMessageBox messagebox(QMessageBox::Critical, PACKAGE_NAME, QString::fromStdString(strprintf("%s.", error_translated)), QMessageBox::Ok);
@@ -206,9 +206,9 @@ void DebugMessageHandler(QtMsgType type, const QMessageLogContext& context, cons
 }
 
 static int qt_argc = 1;
-static const char* qt_argv = "bitcoin-qt";
+static const char* qt_argv = "blinkhash-qt";
 
-BitcoinApplication::BitcoinApplication():
+BlinkhashApplication::BlinkhashApplication():
     QApplication(qt_argc, const_cast<char **>(&qt_argv)),
     optionsModel(nullptr),
     clientModel(nullptr),
@@ -222,20 +222,20 @@ BitcoinApplication::BitcoinApplication():
     setQuitOnLastWindowClosed(false);
 }
 
-void BitcoinApplication::setupPlatformStyle()
+void BlinkhashApplication::setupPlatformStyle()
 {
     // UI per-platform customization
-    // This must be done inside the BitcoinApplication constructor, or after it, because
+    // This must be done inside the BlinkhashApplication constructor, or after it, because
     // PlatformStyle::instantiate requires a QApplication
     std::string platformName;
-    platformName = gArgs.GetArg("-uiplatform", BitcoinGUI::DEFAULT_UIPLATFORM);
+    platformName = gArgs.GetArg("-uiplatform", BlinkhashGUI::DEFAULT_UIPLATFORM);
     platformStyle = PlatformStyle::instantiate(QString::fromStdString(platformName));
     if (!platformStyle) // Fall back to "other" if specified name not found
         platformStyle = PlatformStyle::instantiate("other");
     assert(platformStyle);
 }
 
-BitcoinApplication::~BitcoinApplication()
+BlinkhashApplication::~BlinkhashApplication()
 {
     m_executor.reset();
 
@@ -246,38 +246,38 @@ BitcoinApplication::~BitcoinApplication()
 }
 
 #ifdef ENABLE_WALLET
-void BitcoinApplication::createPaymentServer()
+void BlinkhashApplication::createPaymentServer()
 {
     paymentServer = new PaymentServer(this);
 }
 #endif
 
-void BitcoinApplication::createOptionsModel(bool resetSettings)
+void BlinkhashApplication::createOptionsModel(bool resetSettings)
 {
     optionsModel = new OptionsModel(this, resetSettings);
 }
 
-void BitcoinApplication::createWindow(const NetworkStyle *networkStyle)
+void BlinkhashApplication::createWindow(const NetworkStyle *networkStyle)
 {
-    window = new BitcoinGUI(node(), platformStyle, networkStyle, nullptr);
-    connect(window, &BitcoinGUI::quitRequested, this, &BitcoinApplication::requestShutdown);
+    window = new BlinkhashGUI(node(), platformStyle, networkStyle, nullptr);
+    connect(window, &BlinkhashGUI::quitRequested, this, &BlinkhashApplication::requestShutdown);
 
     pollShutdownTimer = new QTimer(window);
-    connect(pollShutdownTimer, &QTimer::timeout, window, &BitcoinGUI::detectShutdown);
+    connect(pollShutdownTimer, &QTimer::timeout, window, &BlinkhashGUI::detectShutdown);
 }
 
-void BitcoinApplication::createSplashScreen(const NetworkStyle *networkStyle)
+void BlinkhashApplication::createSplashScreen(const NetworkStyle *networkStyle)
 {
     assert(!m_splash);
     m_splash = new SplashScreen(networkStyle);
     // We don't hold a direct pointer to the splash screen after creation, but the splash
     // screen will take care of deleting itself when finish() happens.
     m_splash->show();
-    connect(this, &BitcoinApplication::splashFinished, m_splash, &SplashScreen::finish);
-    connect(this, &BitcoinApplication::requestedShutdown, m_splash, &QWidget::close);
+    connect(this, &BlinkhashApplication::splashFinished, m_splash, &SplashScreen::finish);
+    connect(this, &BlinkhashApplication::requestedShutdown, m_splash, &QWidget::close);
 }
 
-void BitcoinApplication::createNode(interfaces::Init& init)
+void BlinkhashApplication::createNode(interfaces::Init& init)
 {
     assert(!m_node);
     m_node = init.makeNode();
@@ -285,25 +285,25 @@ void BitcoinApplication::createNode(interfaces::Init& init)
     if (m_splash) m_splash->setNode(*m_node);
 }
 
-bool BitcoinApplication::baseInitialize()
+bool BlinkhashApplication::baseInitialize()
 {
     return node().baseInitialize();
 }
 
-void BitcoinApplication::startThread()
+void BlinkhashApplication::startThread()
 {
     assert(!m_executor);
     m_executor.emplace(node());
 
     /*  communication to and from thread */
-    connect(&m_executor.value(), &InitExecutor::initializeResult, this, &BitcoinApplication::initializeResult);
+    connect(&m_executor.value(), &InitExecutor::initializeResult, this, &BlinkhashApplication::initializeResult);
     connect(&m_executor.value(), &InitExecutor::shutdownResult, this, &QCoreApplication::quit);
-    connect(&m_executor.value(), &InitExecutor::runawayException, this, &BitcoinApplication::handleRunawayException);
-    connect(this, &BitcoinApplication::requestedInitialize, &m_executor.value(), &InitExecutor::initialize);
-    connect(this, &BitcoinApplication::requestedShutdown, &m_executor.value(), &InitExecutor::shutdown);
+    connect(&m_executor.value(), &InitExecutor::runawayException, this, &BlinkhashApplication::handleRunawayException);
+    connect(this, &BlinkhashApplication::requestedInitialize, &m_executor.value(), &InitExecutor::initialize);
+    connect(this, &BlinkhashApplication::requestedShutdown, &m_executor.value(), &InitExecutor::shutdown);
 }
 
-void BitcoinApplication::parameterSetup()
+void BlinkhashApplication::parameterSetup()
 {
     // Default printtoconsole to false for the GUI. GUI programs should not
     // print to the console unnecessarily.
@@ -313,19 +313,19 @@ void BitcoinApplication::parameterSetup()
     InitParameterInteraction(gArgs);
 }
 
-void BitcoinApplication::InitPruneSetting(int64_t prune_MiB)
+void BlinkhashApplication::InitPruneSetting(int64_t prune_MiB)
 {
     optionsModel->SetPruneTargetGB(PruneMiBtoGB(prune_MiB), true);
 }
 
-void BitcoinApplication::requestInitialize()
+void BlinkhashApplication::requestInitialize()
 {
     qDebug() << __func__ << ": Requesting initialize";
     startThread();
     Q_EMIT requestedInitialize();
 }
 
-void BitcoinApplication::requestShutdown()
+void BlinkhashApplication::requestShutdown()
 {
     for (const auto w : QGuiApplication::topLevelWindows()) {
         w->hide();
@@ -367,7 +367,7 @@ void BitcoinApplication::requestShutdown()
     Q_EMIT requestedShutdown();
 }
 
-void BitcoinApplication::initializeResult(bool success, interfaces::BlockAndHeaderTipInfo tip_info)
+void BlinkhashApplication::initializeResult(bool success, interfaces::BlockAndHeaderTipInfo tip_info)
 {
     qDebug() << __func__ << ": Initialization result: " << success;
     // Set exit result.
@@ -401,10 +401,10 @@ void BitcoinApplication::initializeResult(bool success, interfaces::BlockAndHead
 
 #ifdef ENABLE_WALLET
         // Now that initialization/startup is done, process any command-line
-        // bitcoin: URIs or payment requests:
+        // blinkhash: URIs or payment requests:
         if (paymentServer) {
-            connect(paymentServer, &PaymentServer::receivedPaymentRequest, window, &BitcoinGUI::handlePaymentRequest);
-            connect(window, &BitcoinGUI::receivedURI, paymentServer, &PaymentServer::handleURIOrFile);
+            connect(paymentServer, &PaymentServer::receivedPaymentRequest, window, &BlinkhashGUI::handlePaymentRequest);
+            connect(window, &BlinkhashGUI::receivedURI, paymentServer, &PaymentServer::handleURIOrFile);
             connect(paymentServer, &PaymentServer::message, [this](const QString& title, const QString& message, unsigned int style) {
                 window->message(title, message, style);
             });
@@ -418,7 +418,7 @@ void BitcoinApplication::initializeResult(bool success, interfaces::BlockAndHead
     }
 }
 
-void BitcoinApplication::handleRunawayException(const QString &message)
+void BlinkhashApplication::handleRunawayException(const QString &message)
 {
     QMessageBox::critical(
         nullptr, tr("Runaway exception"),
@@ -427,7 +427,7 @@ void BitcoinApplication::handleRunawayException(const QString &message)
     ::exit(EXIT_FAILURE);
 }
 
-void BitcoinApplication::handleNonFatalException(const QString& message)
+void BlinkhashApplication::handleNonFatalException(const QString& message)
 {
     assert(QThread::currentThread() == thread());
     QMessageBox::warning(
@@ -437,7 +437,7 @@ void BitcoinApplication::handleNonFatalException(const QString& message)
         QLatin1String("<br><br>") + GUIUtil::MakeHtmlLink(message, PACKAGE_BUGREPORT));
 }
 
-WId BitcoinApplication::getMainWinId() const
+WId BlinkhashApplication::getMainWinId() const
 {
     if (!window)
         return 0;
@@ -452,7 +452,7 @@ static void SetupUIArgs(ArgsManager& argsman)
     argsman.AddArg("-min", "Start minimized", ArgsManager::ALLOW_ANY, OptionsCategory::GUI);
     argsman.AddArg("-resetguisettings", "Reset all settings changed in the GUI", ArgsManager::ALLOW_ANY, OptionsCategory::GUI);
     argsman.AddArg("-splash", strprintf("Show splash screen on startup (default: %u)", DEFAULT_SPLASHSCREEN), ArgsManager::ALLOW_ANY, OptionsCategory::GUI);
-    argsman.AddArg("-uiplatform", strprintf("Select platform to customize UI for (one of windows, macosx, other; default: %s)", BitcoinGUI::DEFAULT_UIPLATFORM), ArgsManager::ALLOW_ANY | ArgsManager::DEBUG_ONLY, OptionsCategory::GUI);
+    argsman.AddArg("-uiplatform", strprintf("Select platform to customize UI for (one of windows, macosx, other; default: %s)", BlinkhashGUI::DEFAULT_UIPLATFORM), ArgsManager::ALLOW_ANY | ArgsManager::DEBUG_ONLY, OptionsCategory::GUI);
 }
 
 int GuiMain(int argc, char* argv[])
@@ -475,8 +475,8 @@ int GuiMain(int argc, char* argv[])
     // Do not refer to data directory yet, this can be overridden by Intro::pickDataDirectory
 
     /// 1. Basic Qt initialization (not dependent on parameters or configuration)
-    Q_INIT_RESOURCE(bitcoin);
-    Q_INIT_RESOURCE(bitcoin_locale);
+    Q_INIT_RESOURCE(blinkhash);
+    Q_INIT_RESOURCE(blinkhash_locale);
 
     // Generate high-dpi pixmaps
     QApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
@@ -488,7 +488,7 @@ int GuiMain(int argc, char* argv[])
     QApplication::setAttribute(Qt::AA_DontUseNativeDialogs);
 #endif
 
-    BitcoinApplication app;
+    BlinkhashApplication app;
     GUIUtil::LoadFont(QStringLiteral(":/fonts/monospace"));
 
     /// 2. Parse command-line options. We do this after qt in order to show an error if there are problems parsing these
@@ -538,7 +538,7 @@ int GuiMain(int argc, char* argv[])
     // Gracefully exit if the user cancels
     if (!Intro::showIfNeeded(did_show_intro, prune_MiB)) return EXIT_SUCCESS;
 
-    /// 6. Determine availability of data directory and parse bitcoin.conf
+    /// 6. Determine availability of data directory and parse blinkhash.conf
     /// - Do not call gArgs.GetDataDirNet() before this step finishes
     if (!CheckDataDirOption()) {
         InitError(strprintf(Untranslated("Specified data directory \"%s\" does not exist.\n"), gArgs.GetArg("-datadir", "")));
@@ -594,7 +594,7 @@ int GuiMain(int argc, char* argv[])
         exit(EXIT_SUCCESS);
 
     // Start up the payment server early, too, so impatient users that click on
-    // bitcoin: links repeatedly have their payment requests routed to this process:
+    // blinkhash: links repeatedly have their payment requests routed to this process:
     if (WalletModel::isWalletEnabled()) {
         app.createPaymentServer();
     }

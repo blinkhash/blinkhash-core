@@ -1,9 +1,9 @@
-Bitcoin version 0.4.4 is now available for download at:
-http://luke.dashjr.org/programs/bitcoin/files/bitcoind-0.4.4/
+Blinkhash version 0.4.4 is now available for download at:
+http://luke.dashjr.org/programs/blinkhash/files/blinkhashd-0.4.4/
 
 This is a bugfix-only release based on 0.4.0.
 
-Please note that the wxBitcoin GUI client is no longer maintained nor supported. If someone would like to step up to maintain this, they should contact Luke-Jr.
+Please note that the wxBlinkhash GUI client is no longer maintained nor supported. If someone would like to step up to maintain this, they should contact Luke-Jr.
 
 Please report bugs for the daemon only using the issue tracker at github:
 https://github.com/bitcoin/bitcoin/issues
@@ -24,7 +24,7 @@ Several shutdown issues have been fixed.
 Check that keys stored in the wallet are valid at startup, and if not,
 report corruption.
 Various build fixes.
-If no password is specified to bitcoind, recommend a secure password.
+If no password is specified to blinkhashd, recommend a secure password.
 Update hard-coded fallback seed nodes, choosing recent ones with long uptime and versions at least 0.4.0.
 Add checkpoint at block 168,000.
 

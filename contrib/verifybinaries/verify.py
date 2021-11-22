@@ -2,7 +2,7 @@
 # Copyright (c) 2020 The Bitcoin Core developers
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
-"""Script for verifying Bitcoin Core release binaries
+"""Script for verifying Blinkhash Core release binaries
 
 This script attempts to download the signature file SHA256SUMS.asc from
 bitcoincore.org and bitcoin.org and compares them.
@@ -19,11 +19,11 @@ import subprocess
 import sys
 from textwrap import indent
 
-WORKINGDIR = "/tmp/bitcoin_verify_binaries"
+WORKINGDIR = "/tmp/blinkhash_verify_binaries"
 HASHFILE = "hashes.tmp"
 HOST1 = "https://bitcoincore.org"
 HOST2 = "https://bitcoin.org"
-VERSIONPREFIX = "bitcoin-core-"
+VERSIONPREFIX = "blinkhash-core-"
 SIGNATUREFILENAME = "SHA256SUMS.asc"
 
 
@@ -131,7 +131,7 @@ def main(args):
         if retval == 1:
             print("Bad signature.")
         elif retval == 2:
-            print("gpg error. Do you have the Bitcoin Core binary release "
+            print("gpg error. Do you have the Blinkhash Core binary release "
                   "signing key installed?")
         print("gpg output:")
         print(indent(output, '\t'))

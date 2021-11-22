@@ -36,7 +36,7 @@ from test_framework.messages import (
     msg_block,
 )
 from test_framework.p2p import P2PInterface
-from test_framework.test_framework import BitcoinTestFramework
+from test_framework.test_framework import BlinkhashTestFramework
 from test_framework.util import (
     assert_equal,
     assert_greater_than,
@@ -56,7 +56,7 @@ TIME_RANGE_MTP = TIME_GENESIS_BLOCK + (HEIGHT - 6) * TIME_RANGE_STEP
 TIME_RANGE_END = TIME_GENESIS_BLOCK + HEIGHT * TIME_RANGE_STEP
 
 
-class BlockchainTest(BitcoinTestFramework):
+class BlockchainTest(BlinkhashTestFramework):
     def set_test_params(self):
         self.setup_clean_chain = True
         self.num_nodes = 1

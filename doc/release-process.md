@@ -37,18 +37,18 @@ Release Process
      that causes rejection of blocks in the past history.
 - Clear the release notes and move them to the wiki (see "Write the release notes" below).
 - Translations on Transifex
-    - Create [a new resource](https://www.transifex.com/bitcoin/bitcoin/content/) named after the major version with the slug `[bitcoin.qt-translation-<RRR>x]`, where `RRR` is the major branch number padded with zeros. Use `src/qt/locale/bitcoin_en.xlf` to create it.
+    - Create [a new resource](https://www.transifex.com/bitcoin/bitcoin/content/) named after the major version with the slug `[blinkhash.qt-translation-<RRR>x]`, where `RRR` is the major branch number padded with zeros. Use `src/qt/locale/blinkhash_en.xlf` to create it.
     - In the project workflow settings, ensure that [Translation Memory Fill-up](https://docs.transifex.com/translation-memory/enabling-autofill) is enabled and that [Translation Memory Context Matching](https://docs.transifex.com/translation-memory/translation-memory-with-context) is disabled.
     - Update the Transifex slug in [`.tx/config`](/.tx/config) to the slug of the resource created in the first step. This identifies which resource the translations will be synchronized from.
     - Make an announcement that translators can start translating for the new version. You can use one of the [previous announcements](https://www.transifex.com/bitcoin/bitcoin/announcements/) as a template.
-    - Change the auto-update URL for the resource to `master`, e.g. `https://raw.githubusercontent.com/bitcoin/bitcoin/master/src/qt/locale/bitcoin_en.xlf`. (Do this only after the previous steps, to prevent an auto-update from interfering.)
+    - Change the auto-update URL for the resource to `master`, e.g. `https://raw.githubusercontent.com/blinkhash/blinkhash/master/src/qt/locale/blinkhash_en.xlf`. (Do this only after the previous steps, to prevent an auto-update from interfering.)
 
 #### After branch-off (on the major release branch)
 
 - Update the versions.
 - Create a pinned meta-issue for testing the release candidate (see [this issue](https://github.com/bitcoin/bitcoin/issues/17079) for an example) and provide a link to it in the release announcements where useful.
 - Translations on Transifex
-    - Change the auto-update URL for the new major version's resource away from `master` and to the branch, e.g. `https://raw.githubusercontent.com/bitcoin/bitcoin/<branch>/src/qt/locale/bitcoin_en.xlf`. Do not forget this or it will keep tracking the translations on master instead, drifting away from the specific major release.
+    - Change the auto-update URL for the new major version's resource away from `master` and to the branch, e.g. `https://raw.githubusercontent.com/blinkhash/blinkhash/<branch>/src/qt/locale/blinkhash_en.xlf`. Do not forget this or it will keep tracking the translations on master instead, drifting away from the specific major release.
 
 #### Before final release
 
@@ -57,9 +57,9 @@ Release Process
 
 #### Tagging a release (candidate)
 
-To tag the version (or release candidate) in git, use the `make-tag.py` script from [bitcoin-maintainer-tools](https://github.com/bitcoin-core/bitcoin-maintainer-tools). From the root of the repository run:
+To tag the version (or release candidate) in git, use the `make-tag.py` script from [blinkhash-maintainer-tools](https://github.com/bitcoin-core/bitcoin-maintainer-tools). From the root of the repository run:
 
-    ../bitcoin-maintainer-tools/make-tag.py v(new version, e.g. 23.0)
+    ../blinkhash-maintainer-tools/make-tag.py v(new version, e.g. 23.0)
 
 This will perform a few last-minute consistency checks in the build system files, and if they pass, create a signed tag.
 
@@ -75,7 +75,7 @@ Check out the source code in the following directory hierarchy.
     cd /path/to/your/toplevel/build
     git clone https://github.com/bitcoin-core/guix.sigs.git
     git clone https://github.com/bitcoin-core/bitcoin-detached-sigs.git
-    git clone https://github.com/bitcoin/bitcoin.git
+    git clone https://github.com/blinkhash/blinkhash-core.git
 
 ### Write the release notes
 
@@ -91,10 +91,10 @@ Generate list of authors:
 
 ### Setup and perform Guix builds
 
-Checkout the Bitcoin Core version you'd like to build:
+Checkout the Blinkhash Core version you'd like to build:
 
 ```sh
-pushd ./bitcoin
+pushd ./blinkhash
 SIGNER='(your builder key, ie bluematt, sipa, etc)'
 VERSION='(new version without v-prefix, e.g. 0.20.0)'
 git fetch "v${VERSION}"
@@ -123,7 +123,7 @@ Follow the relevant Guix README.md sections:
 
 ### Verify other builders' signatures to your own. (Optional)
 
-Add other builders keys to your gpg keyring, and/or refresh keys: See `../bitcoin/contrib/builder-keys/README.md`.
+Add other builders keys to your gpg keyring, and/or refresh keys: See `../blinkhash/contrib/builder-keys/README.md`.
 
 Follow the relevant Guix README.md sections:
 - [Verifying build output attestations](/contrib/guix/README.md#verifying-build-output-attestations)
@@ -146,26 +146,26 @@ Codesigner only: Create Windows/macOS detached signatures:
 
 Codesigner only: Sign the macOS binary:
 
-    transfer bitcoin-osx-unsigned.tar.gz to macOS for signing
-    tar xf bitcoin-osx-unsigned.tar.gz
+    transfer blinkhash-osx-unsigned.tar.gz to macOS for signing
+    tar xf blinkhash-osx-unsigned.tar.gz
     ./detached-sig-create.sh -s "Key ID"
     Enter the keychain password and authorize the signature
     Move signature-osx.tar.gz back to the guix-build host
 
 Codesigner only: Sign the windows binaries:
 
-    tar xf bitcoin-win-unsigned.tar.gz
+    tar xf blinkhash-win-unsigned.tar.gz
     ./detached-sig-create.sh -key /path/to/codesign.key
     Enter the passphrase for the key when prompted
     signature-win.tar.gz will be created
 
 Code-signer only: It is advised to test that the code signature attaches properly prior to tagging by performing the `guix-codesign` step.
-However if this is done, once the release has been tagged in the bitcoin-detached-sigs repo, the `guix-codesign` step must be performed again in order for the guix attestation to be valid when compared against the attestations of non-codesigner builds.
+However if this is done, once the release has been tagged in the blinkhash-detached-sigs repo, the `guix-codesign` step must be performed again in order for the guix attestation to be valid when compared against the attestations of non-codesigner builds.
 
 Codesigner only: Commit the detached codesign payloads:
 
 ```sh
-pushd ./bitcoin-detached-sigs
+pushd ./blinkhash-detached-sigs
 # checkout the appropriate branch for this release series
 rm -rf ./*
 tar xf signature-osx.tar.gz
@@ -180,7 +180,7 @@ popd
 Non-codesigners: wait for Windows/macOS detached signatures:
 
 - Once the Windows/macOS builds each have 3 matching signatures, they will be signed with their respective release keys.
-- Detached signatures will then be committed to the [bitcoin-detached-sigs](https://github.com/bitcoin-core/bitcoin-detached-sigs) repository, which can be combined with the unsigned apps to create signed binaries.
+- Detached signatures will then be committed to the [blinkhash-detached-sigs](https://github.com/bitcoin-core/bitcoin-detached-sigs) repository, which can be combined with the unsigned apps to create signed binaries.
 
 Create (and optionally verify) the codesigned outputs:
 
@@ -205,8 +205,8 @@ cat "$VERSION"/*/all.SHA256SUMS.asc > SHA256SUMS.asc
 ```
 
 
-- Upload to the bitcoincore.org server (`/var/www/bin/bitcoin-core-${VERSION}/`):
-    1. The contents of each `./bitcoin/guix-build-${VERSION}/output/${HOST}/` directory, except for
+- Upload to the bitcoincore.org server (`/var/www/bin/blinkhash-core-${VERSION}/`):
+    1. The contents of each `./blinkhash/guix-build-${VERSION}/output/${HOST}/` directory, except for
        `*-debug*` files.
 
        Guix will output all of the results into host subdirectories, but the SHA256SUMS
@@ -222,17 +222,17 @@ cat "$VERSION"/*/all.SHA256SUMS.asc > SHA256SUMS.asc
        nor put them in the torrent*.
 
        ```sh
-       find guix-build-${VERSION}/output/ -maxdepth 2 -type f -not -name "SHA256SUMS.part" -and -not -name "*debug*" -exec scp {} user@bitcoincore.org:/var/www/bin/bitcoin-core-${VERSION} \;
+       find guix-build-${VERSION}/output/ -maxdepth 2 -type f -not -name "SHA256SUMS.part" -and -not -name "*debug*" -exec scp {} user@bitcoincore.org:/var/www/bin/blinkhash-core-${VERSION} \;
        ```
 
     2. The `SHA256SUMS` file
 
     3. The `SHA256SUMS.asc` combined signature file you just created
 
-- Create a torrent of the `/var/www/bin/bitcoin-core-${VERSION}` directory such
-  that at the top level there is only one file: the `bitcoin-core-${VERSION}`
+- Create a torrent of the `/var/www/bin/blinkhash-core-${VERSION}` directory such
+  that at the top level there is only one file: the `blinkhash-core-${VERSION}`
   directory containing everything else. Name the torrent
-  `bitcoin-${VERSION}.torrent` (note that there is no `-core-` in this name).
+  `blinkhash-${VERSION}.torrent` (note that there is no `-core-` in this name).
 
   Optionally help seed this torrent. To get the `magnet:` URI use:
 
@@ -260,19 +260,19 @@ cat "$VERSION"/*/all.SHA256SUMS.asc > SHA256SUMS.asc
 
       - Install [golang](https://golang.org/doc/install)
 
-      - Install the new Bitcoin Core release
+      - Install the new Blinkhash Core release
 
-      - Run bitcoind on regtest
+      - Run blinkhashd on regtest
 
       - Clone the [bitcoincore.org repository](https://github.com/bitcoin-core/bitcoincore.org)
 
-      - Run: `go run generate.go` while being in `contrib/doc-gen` folder, and with bitcoin-cli in PATH
+      - Run: `go run generate.go` while being in `contrib/doc-gen` folder, and with blinkhash-cli in PATH
 
       - Add the generated files to git
 
   - Update packaging repo
 
-      - Push the flatpak to flathub, e.g. https://github.com/flathub/org.bitcoincore.bitcoin-qt/pull/2
+      - Push the flatpak to flathub, e.g. https://github.com/flathub/org.bitcoincore.blinkhash-qt/pull/2
 
       - Push the snap, see https://github.com/bitcoin-core/packaging/blob/master/snap/build.md
 
@@ -284,11 +284,11 @@ cat "$VERSION"/*/all.SHA256SUMS.asc > SHA256SUMS.asc
 
 - Announce the release:
 
-  - bitcoin-dev and bitcoin-core-dev mailing list
+  - blinkhash-dev and blinkhash-core-dev mailing list
 
-  - Bitcoin Core announcements list https://bitcoincore.org/en/list/announcements/join/
+  - Blinkhash Core announcements list https://bitcoincore.org/en/list/announcements/join/
 
-  - Bitcoin Core Twitter https://twitter.com/bitcoincoreorg
+  - Blinkhash Core Twitter https://twitter.com/blinkhashcoreorg
 
   - Celebrate
 

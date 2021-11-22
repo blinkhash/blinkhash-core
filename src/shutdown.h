@@ -3,8 +3,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef BITCOIN_SHUTDOWN_H
-#define BITCOIN_SHUTDOWN_H
+#ifndef BLINKHASH_SHUTDOWN_H
+#define BLINKHASH_SHUTDOWN_H
 
 #include <util/translation.h> // For bilingual_str
 
@@ -32,4 +32,4 @@ bool ShutdownRequested();
  */
 void WaitForShutdown();
 
-#endif // BITCOIN_SHUTDOWN_H
+#endif // BLINKHASH_SHUTDOWN_H

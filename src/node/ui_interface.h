@@ -3,8 +3,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef BITCOIN_NODE_UI_INTERFACE_H
-#define BITCOIN_NODE_UI_INTERFACE_H
+#ifndef BLINKHASH_NODE_UI_INTERFACE_H
+#define BLINKHASH_NODE_UI_INTERFACE_H
 
 #include <functional>
 #include <memory>
@@ -121,4 +121,4 @@ constexpr auto AbortError = InitError;
 
 extern CClientUIInterface uiInterface;
 
-#endif // BITCOIN_NODE_UI_INTERFACE_H
+#endif // BLINKHASH_NODE_UI_INTERFACE_H

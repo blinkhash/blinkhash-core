@@ -2,8 +2,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef BITCOIN_WALLET_CONTEXT_H
-#define BITCOIN_WALLET_CONTEXT_H
+#ifndef BLINKHASH_WALLET_CONTEXT_H
+#define BLINKHASH_WALLET_CONTEXT_H
 
 #include <sync.h>
 
@@ -40,7 +40,7 @@ struct WalletContext {
     std::list<LoadWalletFn> wallet_load_fns GUARDED_BY(wallets_mutex);
 
     /* getauxwork is a wallet RPC but actually needs the NodeContext (unlike
-       any of the upstream Bitcoin wallet RPCs).  */
+       any of the upstream Blinkhash wallet RPCs).  */
     NodeContext* nodeContext{nullptr};
     
     //! Declare default constructor and destructor that are not inline, so code
@@ -50,4 +50,4 @@ struct WalletContext {
     ~WalletContext();
 };
 
-#endif // BITCOIN_WALLET_CONTEXT_H
+#endif // BLINKHASH_WALLET_CONTEXT_H
